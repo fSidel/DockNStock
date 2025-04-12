@@ -21,9 +21,5 @@ def index():
     now = cur.fetchone()
     cur.close()
     conn.close()
-    return f"Database time is: {now[0]} \
-        with URL: {db_url} \
-        username: {os.environ.get('POSTGRES_USER')} \
-        password: {os.environ.get('POSTGRES_PASSWORD')}"
+    return f"Database time is: {now[0]}"
 
-app.run(debug=True, host='0.0.0.0')
