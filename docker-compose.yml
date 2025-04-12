@@ -5,8 +5,11 @@ services:
       - "5001:5000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - FLASK_ENV=development
     depends_on:
       - db
+    volumes:
+      - ./service_interface:/app  
 
   service_flask:
     build: ./service_flask
@@ -16,8 +19,11 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - FLASK_ENV=development
     depends_on:
       - db
+    volumes:
+      - ./service_flask:/app  
 
   db:
     image: postgres:15
