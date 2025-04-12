@@ -5,8 +5,6 @@ services:
       - "5001:5000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - FLASK_ENV=development
-      - FLASK_APP=app.py  
     depends_on:
       - db
     volumes:
@@ -20,8 +18,6 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - FLASK_ENV=development
-      - FLASK_APP=app.py  
     depends_on:
       - db
     volumes:
