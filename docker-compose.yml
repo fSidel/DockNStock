@@ -12,7 +12,7 @@ services:
     volumes:
       - ./services/business_interface:/app  
 
-  customer_flask:
+  customer_interface:
     build: ./services/customer_interface
     ports:
       - "5002:5000"
