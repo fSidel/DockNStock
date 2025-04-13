@@ -1,17 +1,19 @@
 services:
-  service_interface:
-    build: ./service_interface
+  business_interface:
+    build: ./services/business_interface
     ports:
       - "5001:5000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
       - db
     volumes:
-      - ./service_interface:/app  
+      - ./services/business_interface:/app  
 
-  service_flask:
-    build: ./service_flask
+  customer_flask:
+    build: ./services/customer_interface
     ports:
       - "5002:5000"
     environment:
@@ -21,7 +23,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./service_flask:/app  
+      - ./services/customer_interface:/app  
 
   db:
     image: postgres:15

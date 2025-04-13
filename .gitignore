@@ -1,4 +1,4 @@
 .env.prod
 
-service_flask/__pycache__
-service_interface/__pycache__
+services/business_interface/__pycache__
+services/customer_interface/__pycache__
