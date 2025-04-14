@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}
+    Welcome to StockNDock
+{% endblock %}
+
+{% block content %}
     {% include "./components/navbar.html" %}
     <p>Welcome to StockNDock</p>
     <p>The current time is: {{ current_time }}</p>
-</body>
-</html>
+{% endblock %}
