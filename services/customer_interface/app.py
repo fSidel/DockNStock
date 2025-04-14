@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import datetime
 
 app = Flask(__name__)
@@ -15,3 +15,13 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    match request.method:
+        case 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password')
+            return render_template('welcome.html')
+        case 'GET':
+            return render_template('signup.html')
