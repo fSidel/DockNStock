@@ -4,7 +4,7 @@ from os import environ
 from flask_login import LoginManager, UserMixin, login_user, logout_user   
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@db:5432/appdb"
 db = SQLAlchemy(app)
 
 
@@ -40,7 +40,5 @@ class Products(db.Model):
         return f'<Product {self.name}, weight: {self.weight}, photo: {self.photo}, description: {self.description}>'
 
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Create all tables
-    app.run(host='0.0.0.0', port=5000, debug=True)
+with app.app_context():
+    db.create_all()  # Create all tables
