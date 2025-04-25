@@ -41,4 +41,4 @@ class Products(db.Model):
 
 
 with app.app_context():
-    db.create_all()  # Create all tables
+    db.create_all()
