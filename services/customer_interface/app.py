@@ -18,10 +18,10 @@ def contact():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    match request.method:
-        case 'POST':
-            username = request.form.get('username')
-            password = request.form.get('password')
-            return render_template('welcome.html')
-        case 'GET':
-            return render_template('signup.html')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Process the username and password here if needed
+        return render_template('welcome.html')
+    elif request.method == 'GET':
+        return render_template('signup.html')
