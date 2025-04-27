@@ -10,6 +10,9 @@ import requests
 import re
 
 app = Flask(__name__)
+app.permanent_session_lifetime = timedelta(minutes=40)
+app.config["SECRET_KEY"] = "STOCKNDOCK :)"
+
 
 def verify_password(password):
     if re.match(r'^(?=.*[A-Z])(?=.*\W).{8,}$', password):
@@ -29,8 +32,8 @@ def register():
         password_ok = verify_password(password_verify)
 
         json_data = {
-            'username': 'giovannagher',
-            'password': 'canedoli',
+            'username': username,
+            'password': password,
         }
 
         user = requests.post('http://db_api:5000/users/login', json=json_data)
@@ -39,6 +42,7 @@ def register():
             return render_template("signup.html", user_alive = True)
 
         if password == password_verify and password_ok:
+            print("HERE")
             user = requests.post('http://db_api:5000/users/register', json=json_data)
             if user.ok:
                 #vedere come gestire
@@ -50,6 +54,8 @@ def register():
 
                 #return redirect(url_for("main_route"))
                 return "ok till here"
+            else:
+                return "user already present!"
         else:
             return render_template("signup.html", password_ok=password_ok, password=password, password_verify=password_verify)
     elif 'username' in session and 'password' in session:
