@@ -49,3 +49,18 @@ def login():
 def logout():
     logout_user()
     return jsonify({'message': 'Logged out'}), 200
+
+@user_bp.route("/users/present", methods=["GET"])
+def present():
+    data = request.get_json()
+    username = data.get("username")
+    user = Users.query.filter_by(username=username).first()
+
+    debug_info = {
+        "user": str(user)
+    }
+
+    if user:
+        return jsonify({'message': 'Logged in', 'user': user.to_dict(), 'debug': debug_info}), 200
+    return jsonify({'error': 'User not found', 'debug': debug_info}), 401
+    

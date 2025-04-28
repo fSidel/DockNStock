@@ -8,10 +8,13 @@ import random
 import os
 import requests
 import re
+import secrets
 
 app = Flask(__name__)
 app.permanent_session_lifetime = timedelta(minutes=40)
 app.config["SECRET_KEY"] = "STOCKNDOCK :)"
+
+mail = Mail(app)
 
 
 def verify_password(password):
@@ -19,7 +22,10 @@ def verify_password(password):
         return True
     else:
         return False
-    
+
+def generate_reset_token():
+    return secrets.token_urlsafe(32)
+
 
 #register page
 @app.route('/register', methods=["GET", "POST"])
@@ -93,10 +99,112 @@ def login():
             return render_template("login.html", something_failed = True, user_not_found = False)
         
     elif 'username' in session and 'id' in session:
-        return "qui il redirect al main route"
+        return redirect(url_for("main_route"))
     
     else:
         return render_template("login.html", something_failed = False)
 
+@app.route("/")
+def main_route():
+    #how to query products?
+    # cities=Cities.query.all()
+
+    # db_comments = db.session.query(
+    #     Users.username,
+    #     Comments.cities_id,
+    #     Comments.comment
+    # ).join(Comments, Users.id == Comments.users_id).all()
+
+    # truncated_comments= []
+    # for com in db_comments:
+    #     ind = com[0].index('@')
+    #     truncated_username = com[0][:ind]  
+    #     truncated_comment = (truncated_username,) + com[1:]  
+    #     truncated_comments.append(truncated_comment)
+    #change!
+    # if 'username' in session and 'password' in session and 'id' in session:
+    #     user_id = session['id']
+    #     liked_cities = db.session.query(Cities.photo).join(Like, Cities.id == Like.cities_id).filter(Like.users_id == user_id).all()
+    #     liked_photos = [city.photo for city in liked_cities]
+ 
+    #     saved_cities = db.session.query(Cities.photo).join(Saves, Cities.id == Saves.cities_id).filter(Saves.users_id == user_id).all()
+    #     saved_photos = [city.photo for city in saved_cities]
+    # else:
+    #     liked_photos = []
+    #     saved_photos = []
+    # random.shuffle(cities)
+
+    return "main route"
+
+@app.route('/<something>')
+def goto(something):
+    return redirect(url_for('main_route'))
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    session.clear()
+
+    return redirect(url_for("main_route"))
+
+@app.route('/forget', methods = ["GET", "POST"])
+def forgotpasswd():
+    if request.method == "POST":
+        
+        username = request.form.get('username_input')
+
+        json_data = {
+            "username" : "ciao@ciao.com"
+        }
+
+        user = requests.post('http://db_api:5000/users/present', json=json_data)
+        user_json = user.json()
+        if not user:
+            #user is not present in db
+            return render_template("forgot.html", user_alive = False, email_sent = False)
+
+        token = generate_reset_token()
+        token += username
+        
+        msg = Message('Reset Password', sender = USERNAME, recipients=[user.username])
+
+        msg.body = f'We recived a new password reset request.\nClick on this link to reset the password: {url_for("confirm_forget", token = token, _external = True)}.\nTravelHub\'s Team.'
+        mail.send(msg)        
+
+        return render_template("forgot.html", user_alive = True, email_sent = True)
     
+    else:
+        return render_template("forgot.html")
+    
+@app.route('/forget/<token>/confirm', methods = ["GET", "POST"])
+def confirm_forget(token):
+    if request.method == "POST":
+        email = token[43:]
+        print(email)
+        password = request.form.get("password_input1")
+        password_verify = request.form.get("password_input2")
+
+        password_ok = verify_password(password_verify)
+
+        user = Users.query.filter_by(username = email).first()
+        if not user:
+            return render_template("forgot.html", user_alive = False, password_match = True, password_quality = True, email_sent = False)
+        if password == password_verify and password_ok:
+
+            user.password = password_verify
+            db.session.commit()
+
+            return redirect(url_for("login"))
+        
+        elif not password_ok:
+            return render_template("confirm_forgot.html", password_quality = False)
+            
+        elif password != password_verify:
+            return render_template("confirm_forgot.html", password_match = False)
+        
+    else:
+        return render_template("confirm_forgot.html")
+
+
+
 app.run(debug=True, host="0.0.0.0")
