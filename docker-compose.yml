@@ -1,8 +1,12 @@
+#Notice for future: verify order of dependencies between services (depends_on)
 services:
   business_interface:
     build: ./services/business_interface
     ports:
       - "5001:5000"
+    depends_on:
+      - db
+      - db_api
     volumes:
       - ./services/business_interface:/app  
 
@@ -10,6 +14,9 @@ services:
     build: ./services/customer_interface
     ports:
       - "5002:5000"
+    depends_on:
+      - db
+      - db_api
     volumes:
       - ./services/customer_interface:/app  
 
