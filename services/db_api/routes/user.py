@@ -39,8 +39,8 @@ def login():
 def present():
     data = request.get_json()
     username = data.get("username")
-    user = Users.query.filter_by(username=username).first()
 
+    user = Users.get_user(username)
     if user:
         return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
     return jsonify({'error': 'User not found'}), 401

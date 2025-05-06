@@ -15,8 +15,9 @@ class Users(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-    def username_exists(self, username):
-        return db.session.query(Users).filter_by(username=username).first() is not None
+    @staticmethod
+    def get_user(self, username):
+        return db.session.query(Users).filter_by(username=username).first()
 
     def __init__(self, username=None, password=None):
         self.username = username
