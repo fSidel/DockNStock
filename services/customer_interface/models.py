@@ -7,11 +7,6 @@ class User(UserMixin):
         self.id = id
         self.username = username
 
-    @staticmethod
-    def from_dict(data):
-        """Create a User object from a dictionary."""
-        return User(id=data.get("id"), username=data.get("username"))
-
     def to_dict(self):
         """Convert the User object to a dictionary."""
         return {"id": self.id, "username": self.username}
