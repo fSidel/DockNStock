@@ -85,18 +85,11 @@ def login():
         }
 
         user = requests.post('http://db_api:5000/users/login', json=json_data)
-        user_json = user.json()
-        password = user_json["debug"]["password_provided"]
-        if user.ok and password == password_verify:
-            #login_user(user)           
+        if user.ok:    
+            user_data = user.json()['user']
             session['username'] = username
-            session['id'] = user_json['user']['id']
-
+            session['id'] = user_data['id']
             return "qui il redirect al main route"
-        
-        elif not user:
-            return render_template("login.html", something_failed = True, user_not_found = True)
-        
         else:
             return render_template("login.html", something_failed = True, user_not_found = False)
         
@@ -125,9 +118,10 @@ def logout():
 @app.route('/forget', methods = ["GET", "POST"])
 def forgotpasswd():
     if request.method == "POST":
-        
         username = request.form.get('username_input')
+        print(username, flush=True)
 
+        print("Retreving User..", flush=True)
         user = requests.post('http://db_api:5000/users/present', 
                              json={"username" : username})
 
@@ -137,7 +131,7 @@ def forgotpasswd():
         token = generate_reset_token()
         token += username
         
-        msg = Message('Reset Password', sender = Config.MAIL_USERNAME, recipients=[user.username])
+        msg = Message('Reset Password', sender = Config.MAIL_USERNAME, recipients=[username])
         msg.body = (
             "We received a new password reset request.\n"
             "Click on this link to reset the password: "
