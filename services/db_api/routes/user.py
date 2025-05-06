@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_user, logout_user, login_required
 from models import Users
 from database import db
 
@@ -30,8 +29,7 @@ def login():
     password = data.get('password')
     user = Users.query.filter_by(username=username).first()
     
-    if user and user.check_password(password):  # Use the check_password method
-        login_user(user)
+    if user and user.check_password(password): 
         return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
     
     return jsonify({'error': 'Invalid credentials'}), 401
@@ -43,11 +41,7 @@ def present():
     username = data.get("username")
     user = Users.query.filter_by(username=username).first()
 
-    debug_info = {
-        "user": str(user)
-    }
-
     if user:
-        return jsonify({'message': 'Logged in', 'user': user.to_dict(), 'debug': debug_info}), 200
-    return jsonify({'error': 'User not found', 'debug': debug_info}), 401
+        return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
+    return jsonify({'error': 'User not found'}), 401
     
