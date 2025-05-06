@@ -106,34 +106,6 @@ def login():
 
 @app.route("/")
 def main_route():
-    #how to query products?
-    # cities=Cities.query.all()
-
-    # db_comments = db.session.query(
-    #     Users.username,
-    #     Comments.cities_id,
-    #     Comments.comment
-    # ).join(Comments, Users.id == Comments.users_id).all()
-
-    # truncated_comments= []
-    # for com in db_comments:
-    #     ind = com[0].index('@')
-    #     truncated_username = com[0][:ind]  
-    #     truncated_comment = (truncated_username,) + com[1:]  
-    #     truncated_comments.append(truncated_comment)
-    #change!
-    # if 'username' in session and 'password' in session and 'id' in session:
-    #     user_id = session['id']
-    #     liked_cities = db.session.query(Cities.photo).join(Like, Cities.id == Like.cities_id).filter(Like.users_id == user_id).all()
-    #     liked_photos = [city.photo for city in liked_cities]
- 
-    #     saved_cities = db.session.query(Cities.photo).join(Saves, Cities.id == Saves.cities_id).filter(Saves.users_id == user_id).all()
-    #     saved_photos = [city.photo for city in saved_cities]
-    # else:
-    #     liked_photos = []
-    #     saved_photos = []
-    # random.shuffle(cities)
-
     return "main route"
 
 @app.route('/<something>')
