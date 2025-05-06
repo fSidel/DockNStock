@@ -123,26 +123,25 @@ def forgotpasswd():
         
         username = request.form.get('username_input')
 
-        json_data = {
-            "username" : "ciao@ciao.com"
-        }
+        user = requests.post('http://db_api:5000/users/present', 
+                             json={"username" : username})
 
-        user = requests.post('http://db_api:5000/users/present', json=json_data)
-        user_json = user.json()
         if not user:
-            #user is not present in db
             return render_template("forgot.html", user_alive = False, email_sent = False)
 
         token = generate_reset_token()
         token += username
         
-        msg = Message('Reset Password', sender = USERNAME, recipients=[user.username])
-
-        msg.body = f'We recived a new password reset request.\nClick on this link to reset the password: {url_for("confirm_forget", token = token, _external = True)}.\nTravelHub\'s Team.'
+        msg = Message('Reset Password', sender = Config.MAIL_USERNAME, recipients=[user.username])
+        msg.body = (
+            "We received a new password reset request.\n"
+            "Click on this link to reset the password: "
+            f"{url_for('confirm_forget', token=token, _external=True)}\n"
+            "If you did not request this, please ignore this email."
+        )
         mail.send(msg)        
-
         return render_template("forgot.html", user_alive = True, email_sent = True)
-    
+
     else:
         return render_template("forgot.html")
     
@@ -156,13 +155,15 @@ def confirm_forget(token):
 
         password_ok = verify_password(password_verify)
 
-        user = Users.query.filter_by(username = email).first()
+        user = requests.post('http://db_api:5000/users/present', 
+                             json={"username" : email})
         if not user:
             return render_template("forgot.html", user_alive = False, password_match = True, password_quality = True, email_sent = False)
+        
         if password == password_verify and password_ok:
-
             user.password = password_verify
-            db.session.commit()
+            requests.post('http://db_api:5000/users/set_password',
+                             json={"username" : email, "password" : password_verify}) 
 
             return redirect(url_for("login"))
         
