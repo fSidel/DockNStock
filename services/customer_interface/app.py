@@ -154,14 +154,20 @@ def confirm_forget(token):
 
         password_ok = verify_password(password_verify)
 
+        print(password, flush=True)
+        print(password_verify, flush=True)
+        print(password_ok, flush=True)
+
         user = requests.post('http://db_api:5000/users/present', 
                              json={"username" : email})
         if not user:
             return render_template("forgot.html", user_alive = False, password_match = True, password_quality = True, email_sent = False)
         
         if password == password_verify and password_ok:
+            print("Updating Password..", flush=True)
+            print(password_verify, flush=True)
             user.password = password_verify
-            requests.post('http://db_api:5000/users/set_password',
+            requests.post('http://db_api:5000/users/change_password',
                              json={"username" : email, "password" : password_verify}) 
 
             return redirect(url_for("login"))

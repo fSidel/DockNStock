@@ -18,6 +18,14 @@ class Users(UserMixin, db.Model):
     @staticmethod
     def get_user(username):
         return db.session.query(Users).filter_by(username=username).first()
+    
+    @staticmethod
+    def change_password(username, new_password):
+        user = db.session.query(Users).filter_by(username=username).first()
+        if user:
+            user.set_password(new_password)
+            db.session.commit()
+        return None
 
     def __init__(self, username=None, password=None):
         self.username = username

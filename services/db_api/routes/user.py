@@ -57,12 +57,15 @@ def present():
 def change_password():
     data = request.get_json()
     username = data.get("username")
-    new_password = data.get("new_password")
+    new_password = data.get("password")
 
+    print(f"target account {username}", flush=True)
+    print(f"Request to change password to {new_password}", flush=True)
     user = Users.query.filter_by(username=username).first()
     if user:
         user.set_password(new_password)
         db.session.commit()
+        print("Password changed", flush=True)
         return jsonify({'message': 'Password changed successfully'}), 200
     
     return jsonify({'error': 'User not found'}), 404
