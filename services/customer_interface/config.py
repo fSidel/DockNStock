@@ -1,0 +1,7 @@
+class Config:
+    SECRET_KEY = "STOCKNDOCK :)"
+    MAIL_SERVER = 'smtp.example.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'your_email@example.com'
+    MAIL_PASSWORD = 'your_password'

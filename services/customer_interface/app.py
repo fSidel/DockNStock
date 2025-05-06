@@ -3,17 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc, or_
 from flask_mail import Mail, Message
 from flask_login import LoginManager, UserMixin, login_user, logout_user
+from config import Config
 from datetime import *
-import random
-import os
 import requests
 import re
 import secrets
 
 app = Flask(__name__)
 app.permanent_session_lifetime = timedelta(minutes=40)
-app.config["SECRET_KEY"] = "STOCKNDOCK :)"
-
+app.config.from_object(Config)
 mail = Mail(app)
 
 
