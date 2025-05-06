@@ -35,13 +35,20 @@ def login():
     return jsonify({'error': 'Invalid credentials'}), 401
 
 
-@user_bp.route("/users/present", methods=["GET"])
+@user_bp.route("/users/present", methods=["POST"])
 def present():
     data = request.get_json()
     username = data.get("username")
 
+    print(username, flush=True)
+    print("Retreving User..", flush=True)
+
     user = Users.get_user(username)
     if user:
+        print(user, flush=True)
+        print("User found", flush=True)
+        print(user.to_dict(), flush=True)
+
         return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
     return jsonify({'error': 'User not found'}), 401
     
