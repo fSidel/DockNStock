@@ -1,7 +1,9 @@
+import os
+
 class Config:
     SECRET_KEY = "STOCKNDOCK :)"
-    MAIL_SERVER = 'smtp.example.com'
-    MAIL_PORT = 587
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = os.getenv('MAIL_PORT')
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'your_email@example.com'
-    MAIL_PASSWORD = 'your_password'
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
