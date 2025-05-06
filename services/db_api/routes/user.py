@@ -29,19 +29,12 @@ def login():
     username = data.get('username')
     password = data.get('password')
     user = Users.query.filter_by(username=username).first()
-
-    debug_info = {
-        "user": str(user),  # Convert user object to string for debugging
-        "password_provided": password,
-        "password_in_db": user.password if user else "No user found",
-        "password_match": user.check_password(password) if user else "N/A"
-    }
     
     if user and user.check_password(password):  # Use the check_password method
         login_user(user)
-        return jsonify({'message': 'Logged in', 'user': user.to_dict(), 'debug': debug_info}), 200
+        return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
     
-    return jsonify({'error': 'Invalid credentials', 'debug': debug_info}), 401
+    return jsonify({'error': 'Invalid credentials'}), 401
 
 
 @user_bp.route('/users/logout', methods=['POST'])
