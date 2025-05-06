@@ -9,6 +9,9 @@ import requests
 import re
 import secrets
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 app = Flask(__name__)
 app.permanent_session_lifetime = timedelta(minutes=40)
 app.config.from_object(Config)
@@ -40,14 +43,14 @@ def register():
             'password': password,
         }
 
-        user = requests.post('http://db_api:5000/users/login', json=json_data)
+        user = requests.post('http://db_api:5000/users/register', json=json_data)
 
         if user.ok:
             return render_template("signup.html", user_alive = True)
 
         if password == password_verify and password_ok:
             print("HERE")
-            user = requests.post('http://db_api:5000/users/register', json=json_data)
+            user = requests.post('http://db_api:5000/users/login', json=json_data)
             if user.ok:
                 #vedere come gestire
                 session.permanent = True
@@ -75,6 +78,7 @@ def login():
         username = request.form.get("username_input")
         password_verify = request.form.get("password_input")
 
+        print(username, password_verify, flush=True)
         json_data = {
             'username': username,
             'password': password_verify,
@@ -97,6 +101,7 @@ def login():
             return render_template("login.html", something_failed = True, user_not_found = False)
         
     elif 'username' in session and 'id' in session:
+        print("Already logger in", flush=True)
         return redirect(url_for("main_route"))
     
     else:
@@ -104,7 +109,7 @@ def login():
 
 @app.route("/")
 def main_route():
-    return "main route"
+    return f"Main Route"
 
 @app.route('/<something>')
 def goto(something):
@@ -175,7 +180,3 @@ def confirm_forget(token):
         
     else:
         return render_template("confirm_forgot.html")
-
-
-
-app.run(debug=True, host="0.0.0.0")
