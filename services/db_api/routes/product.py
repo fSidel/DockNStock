@@ -6,7 +6,6 @@ from database import db
 product_bp = Blueprint('product', __name__)
 
 @product_bp.route('/products', methods=['POST'])
-@login_required
 def create_product():
     data = request.get_json()
     prod = Products(
@@ -30,7 +29,6 @@ def get_product(prod_id):
     return jsonify(p.to_dict())
 
 @product_bp.route('/products/<int:prod_id>', methods=['PUT'])
-@login_required
 def update_product(prod_id):
     p = Products.query.get_or_404(prod_id)
     data = request.get_json()
@@ -41,7 +39,6 @@ def update_product(prod_id):
     return jsonify({'message': 'Product updated', 'product': p.to_dict()})
 
 @product_bp.route('/products/<int:prod_id>', methods=['DELETE'])
-@login_required
 def delete_product(prod_id):
     p = Products.query.get_or_404(prod_id)
     db.session.delete(p)
