@@ -37,12 +37,6 @@ def login():
     return jsonify({'error': 'Invalid credentials'}), 401
 
 
-@user_bp.route('/users/logout', methods=['POST'])
-@login_required
-def logout():
-    logout_user()
-    return jsonify({'message': 'Logged out'}), 200
-
 @user_bp.route("/users/present", methods=["GET"])
 def present():
     data = request.get_json()
