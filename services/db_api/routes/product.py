@@ -44,3 +44,11 @@ def delete_product(prod_id):
     db.session.delete(p)
     db.session.commit()
     return jsonify({'message': 'Product deleted'})
+
+@products_bp.route('/products/like')
+def like_product():
+    liked_products = db.session.query(Products)
+        .join(Like, Products.id == Like.products_id)
+        .filter(Like.users_id == current_user.id)
+        .all()
+    return jsonify([p.to_dict() for p in liked_products])

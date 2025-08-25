@@ -63,3 +63,11 @@ class Products(db.Model):
             "photo": self.photo,
             "description": self.description,
         }
+
+class Like(db.Model):
+    __tablename__ = 'likes'
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    products_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key = True)
+
+    users_like = db.relationship("Users", backref=db.backref("users_like", uselist=False))
+    products_like = db.relationship("Products", backref=db.backref("products_like", uselist=False))

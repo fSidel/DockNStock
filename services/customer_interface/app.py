@@ -27,6 +27,42 @@ def verify_password(password):
 def generate_reset_token():
     return secrets.token_urlsafe(32)
 
+#home page
+
+@app.route("/home")
+def home():
+    #products=Cities.query.all()
+
+    # db_comments = db.session.query(
+    #     Users.username,
+    #     Comments.cities_id,
+    #     Comments.comment
+    # ).join(Comments, Users.id == Comments.users_id).all()
+
+    # truncated_comments = []
+    # for com in db_comments:
+    #     ind = com[0].index('@')
+    #     truncated_username = com[0][:ind]  
+    #     truncated_comment = (truncated_username,) + com[1:]  
+    #     truncated_comments.append(truncated_comment)
+    products = requests.get('http://db_api:5000/products/get')
+    
+
+
+    if 'username' in session and 'password' in session and 'id' in session:
+        user_id = session['id']
+        liked_photos = [city.photo for city in liked_products]  #N.B. liked_products è un json
+ 
+        saved_cities = db.session.query(Cities.photo).join(Saves, Cities.id == Saves.cities_id).filter(Saves.users_id == user_id).all()
+        saved_photos = [city.photo for city in saved_cities]
+    else:
+        liked_photos = []
+        saved_photos = []
+
+    # random.shuffle(cities)
+
+    return render_template("index.html", cities=cities, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
+
 
 #register page
 @app.route('/register', methods=["GET", "POST"])
@@ -60,7 +96,7 @@ def register():
                 session['id'] = user_json['user']['id']
 
                 #return redirect(url_for("main_route"))
-                return "ok till here"
+                return redirect(url_for("main"))
             else:
                 return "SOMETHING BAD HAPPENED! (tipo username > x caratteri)"
         else:
@@ -89,7 +125,7 @@ def login():
             user_data = user.json()['user']
             session['username'] = username
             session['id'] = user_data['id']
-            return "qui il redirect al main route"
+            return redirect(url_for("home"))
         else:
             return render_template("login.html", something_failed = True, user_not_found = False)
         
@@ -102,7 +138,7 @@ def login():
 
 @app.route("/")
 def main_route():
-    return f"Main Route"
+    return redirect(url_for("login"))
 
 @app.route('/<something>')
 def goto(something):

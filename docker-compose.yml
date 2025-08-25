@@ -15,7 +15,7 @@ services:
     ports:
       - "5002:5000"
     env_file:
-      - mail.env.dev
+      - .env.dev
     depends_on:
       - db
       - db_api
