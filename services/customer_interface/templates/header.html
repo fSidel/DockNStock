@@ -7,7 +7,7 @@
 
     
 
-{% if session %}
+{% if current_user.is_authenticated %}
     <div class="menu"><a href="/" class="link"><button class="pulsante hh" type="button">HOME</button></a></div>    
     <div class="menu"><a href="/like" class="link"><button class="pulsante hh" type="button">LIKE HISTORY</button></a></div>
     <div class="menu"><a href="/favorite" class="link"><button class="pulsante hh" type="button">SAVED</button></a></div>

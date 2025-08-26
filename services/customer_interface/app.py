@@ -8,7 +8,6 @@ from datetime import *
 import requests
 import re
 import secrets
-
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,10 +21,20 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "Please log in to access this page"
 
+class Users(UserMixin):
+    def __init__(self, user_id, username):
+        self.id = user_id
+        self.username = username
+
 # User loader function
 @login_manager.user_loader
 def load_user(user_id):
-    user = requests.get(f'http://db_api:5000/users/{user_id}')
+    jsn_data = requests.get(f'http://db_api:5000/users/{user_id}')
+    usr_data_for_login = jsn_data.json()["user"]
+    puppet_usr = Users(
+        usr_data_for_login["id"], usr_data_for_login["username"]
+    )
+    return puppet_usr   #there are no checks!
 
 
 def verify_password(password):
@@ -38,8 +47,8 @@ def generate_reset_token():
     return secrets.token_urlsafe(32)
 
 #home page
-@login_required
 @app.route("/home")
+@login_required
 def home():
     #products=Cities.query.all()
 
@@ -90,21 +99,20 @@ def register():
         }
         user = requests.post('http://db_api:5000/users/register', json=json_data)
 
-        if user.ok:
-            return render_template("signup.html", user_alive = True)
-
+        # if user.ok: # #devo controllare se l'email è già presente nel database
+        #     return render_template("signup.html", user_alive = True)
+        
         if password == password_verify and password_ok:
-            print("HERE")
             user = requests.post('http://db_api:5000/users/login', json=json_data)
             if user.ok:
+                user_data = user.json()["user"]
+                usr = Users(user_data["id"], user_data["username"])
+                login_user(usr)                     
                 return redirect(url_for("home"))
             else:
                 return "SOMETHING BAD HAPPENED! (tipo username > x caratteri)"
         else:
             return render_template("signup.html", password_ok=password_ok, password=password, password_verify=password_verify)
-    elif current_user.is_authenticated:
-        return "bo"
-        #return redirect(url_for("main_route"))
     else:
         return render_template("signup.html")
     
@@ -121,6 +129,9 @@ def login():
         }
         user = requests.post('http://db_api:5000/users/login', json=json_data)
         if user.ok:    
+            user_data = user.json()["user"]
+            usr = Users(user_data["id"], user_data["username"])
+            login_user(usr)            
             return redirect(url_for("home"))
         else:
             return render_template("login.html", something_failed = True, user_not_found = False)
@@ -132,7 +143,10 @@ def login():
 
 @app.route("/")
 def main_route():
-    return redirect(url_for("register"))
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+    else:
+        return redirect(url_for("register"))
 
 @app.route('/<something>')
 def goto(something):
