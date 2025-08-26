@@ -17,15 +17,15 @@ app.permanent_session_lifetime = timedelta(minutes=40)
 app.config.from_object(Config)
 mail = Mail(app)
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = "login"
-# login_manager.login_message = "Please log in to access this page"
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+login_manager.login_message = "Please log in to access this page"
 
-# # User loader function
-# @login_manager.user_loader
-# def load_user(user_id):
-#     user = requests.get(f'http://db_api:5000/users/{user_id}')
+# User loader function
+@login_manager.user_loader
+def load_user(user_id):
+    user = requests.get(f'http://db_api:5000/users/{user_id}')
 
 
 def verify_password(password):
@@ -132,7 +132,7 @@ def login():
 
 @app.route("/")
 def main_route():
-    return redirect(url_for("login"))
+    return redirect(url_for("register"))
 
 @app.route('/<something>')
 def goto(something):
