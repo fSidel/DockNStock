@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request, session, j
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc, or_
 from flask_mail import Mail, Message
-from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from config import Config
 from datetime import *
 import requests
@@ -17,6 +17,16 @@ app.permanent_session_lifetime = timedelta(minutes=40)
 app.config.from_object(Config)
 mail = Mail(app)
 
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = "login"
+# login_manager.login_message = "Please log in to access this page"
+
+# # User loader function
+# @login_manager.user_loader
+# def load_user(user_id):
+#     user = requests.get(f'http://db_api:5000/users/{user_id}')
+
 
 def verify_password(password):
     if re.match(r'^(?=.*[A-Z])(?=.*\W).{8,}$', password):
@@ -28,7 +38,7 @@ def generate_reset_token():
     return secrets.token_urlsafe(32)
 
 #home page
-
+@login_required
 @app.route("/home")
 def home():
     #products=Cities.query.all()
@@ -45,23 +55,23 @@ def home():
     #     truncated_username = com[0][:ind]  
     #     truncated_comment = (truncated_username,) + com[1:]  
     #     truncated_comments.append(truncated_comment)
-    products = requests.get('http://db_api:5000/products/get')
+    # products = requests.get('http://db_api:5000/products/get')
     
 
 
-    if 'username' in session and 'password' in session and 'id' in session:
-        user_id = session['id']
-        liked_photos = [city.photo for city in liked_products]  #N.B. liked_products è un json
+    # if 'username' in session and 'password' in session and 'id' in session:
+    #     user_id = session['id']
+    #     liked_photos = [city.photo for city in liked_products]  #N.B. liked_products è un json
  
-        saved_cities = db.session.query(Cities.photo).join(Saves, Cities.id == Saves.cities_id).filter(Saves.users_id == user_id).all()
-        saved_photos = [city.photo for city in saved_cities]
-    else:
-        liked_photos = []
-        saved_photos = []
+    #     saved_cities = db.session.query(Cities.photo).join(Saves, Cities.id == Saves.cities_id).filter(Saves.users_id == user_id).all()
+    #     saved_photos = [city.photo for city in saved_cities]
+    # else:
+    #     liked_photos = []
+    #     saved_photos = []
 
-    # random.shuffle(cities)
-
-    return render_template("index.html", cities=cities, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
+    # # random.shuffle(cities)
+    return "hello fucking world :)"
+    # return render_template("index.html", cities=cities, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
 
 
 #register page
@@ -78,7 +88,6 @@ def register():
             'username': username,
             'password': password,
         }
-
         user = requests.post('http://db_api:5000/users/register', json=json_data)
 
         if user.ok:
@@ -88,20 +97,12 @@ def register():
             print("HERE")
             user = requests.post('http://db_api:5000/users/login', json=json_data)
             if user.ok:
-                #vedere come gestire
-                session.permanent = True
-                
-                session['username'] = username
-                user_json = user.json()
-                session['id'] = user_json['user']['id']
-
-                #return redirect(url_for("main_route"))
-                return redirect(url_for("main"))
+                return redirect(url_for("home"))
             else:
                 return "SOMETHING BAD HAPPENED! (tipo username > x caratteri)"
         else:
             return render_template("signup.html", password_ok=password_ok, password=password, password_verify=password_verify)
-    elif 'username' in session and 'password' in session:
+    elif current_user.is_authenticated:
         return "bo"
         #return redirect(url_for("main_route"))
     else:
@@ -113,26 +114,19 @@ def login():
     if request.method == "POST":
         username = request.form.get("username_input")
         password_verify = request.form.get("password_input")
-
         print(username, password_verify, flush=True)
         json_data = {
             'username': username,
             'password': password_verify,
         }
-
         user = requests.post('http://db_api:5000/users/login', json=json_data)
         if user.ok:    
-            user_data = user.json()['user']
-            session['username'] = username
-            session['id'] = user_data['id']
             return redirect(url_for("home"))
         else:
             return render_template("login.html", something_failed = True, user_not_found = False)
-        
-    elif 'username' in session and 'id' in session:
+    elif current_user.is_authenticated:
         print("Already logger in", flush=True)
         return redirect(url_for("main_route"))
-    
     else:
         return render_template("login.html", something_failed = False)
 
@@ -147,8 +141,6 @@ def goto(something):
 @app.route("/logout")
 def logout():
     logout_user()
-    session.clear()
-
     return redirect(url_for("main_route"))
 
 @app.route('/forget', methods = ["GET", "POST"])

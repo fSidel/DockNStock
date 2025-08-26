@@ -28,7 +28,6 @@ def login():
     username = data.get('username')
     password = data.get('password')
     user = Users.query.filter_by(username=username).first()
-    
     if user and user.check_password(password): 
         return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
     
@@ -52,6 +51,17 @@ def present():
         return jsonify({'message': 'Logged in', 'user': user.to_dict()}), 200
     return jsonify({'error': 'User not found'}), 401
     
+#Gio, I just wrote another route to check the presence of a user so that I don't mess up with the username as the
+#key parameter for the query above.
+@user_bp.route('/users/<int:user_id>', methods=['GET'])
+def check_user(user_id):
+    user = Users.query.get(user_id)  # get by primary key
+    if user:
+        return jsonify({"exists": True, "user": user.to_dict()})
+    else:
+        return jsonify({"exists": False, "message": "User not found"}), 404
+
+
 
 @user_bp.route("/users/change_password", methods=["POST"])
 def change_password():
