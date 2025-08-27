@@ -4,6 +4,8 @@ from database import db
 from models import Users, Products
 from routes.user import user_bp
 from routes.product import product_bp
+from routes.like import like_bp
+
 import secrets
 
 app = Flask(__name__)
@@ -16,3 +18,4 @@ with app.app_context():
 
 app.register_blueprint(user_bp)
 app.register_blueprint(product_bp)
+app.register_blueprint(like_bp)

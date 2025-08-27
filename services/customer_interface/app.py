@@ -9,6 +9,7 @@ import requests
 import re
 import secrets
 import logging
+import random
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
@@ -21,10 +22,19 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "Please log in to access this page"
 
+#I didn't know how to import it :(
 class Users(UserMixin):
     def __init__(self, user_id, username):
         self.id = user_id
         self.username = username
+
+class Products:
+    def __init__(self, id: int, name: str, weight: str, photo: str, description: str):
+        self.id = id
+        self.name = name
+        self.weight = weight
+        self.photo = photo
+        self.description = description
 
 # User loader function
 @login_manager.user_loader
@@ -64,23 +74,51 @@ def home():
     #     truncated_username = com[0][:ind]  
     #     truncated_comment = (truncated_username,) + com[1:]  
     #     truncated_comments.append(truncated_comment)
-    # products = requests.get('http://db_api:5000/products/get')
+
+    products_data = requests.get(f'http://db_api:5000/products').json() #aggiungere controlli
+    products_list = []
+    for pro in products_data:
+        product = Products(pro["id"], pro["name"], pro["weight"], pro["photo"], pro["description"])
+        products_list.append(product)
+
+    liked_data = requests.get(f"http://db_api:5000/products/like/{current_user.id}").json()  #aggiungere controlli
+    liked_list = []
+    for like in liked_data:
+        liked_product = Products(like["id"], like["name"], like["weight"], like["photo"], like["description"])
+        liked_list.append(liked_product)
     
+    random.shuffle(products_list)
 
+    liked_photos = []
+    saved_photos = []   #da lasciare ? BO!
+    truncated_comments = [] #da rimuovere
 
-    # if 'username' in session and 'password' in session and 'id' in session:
-    #     user_id = session['id']
-    #     liked_photos = [city.photo for city in liked_products]  #N.B. liked_products è un json
- 
-    #     saved_cities = db.session.query(Cities.photo).join(Saves, Cities.id == Saves.cities_id).filter(Saves.users_id == user_id).all()
-    #     saved_photos = [city.photo for city in saved_cities]
-    # else:
-    #     liked_photos = []
-    #     saved_photos = []
+    return render_template("index.html", products=products_list, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
 
-    # # random.shuffle(cities)
-    return "hello fucking world :)"
-    # return render_template("index.html", cities=cities, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
+@app.route('/leavealike', methods = ["POST"])
+def leave_like():
+    form_sent = request.form
+    #if user is logged in
+    if current_user.is_authenticated:
+        product_id = form_sent.getlist('primarykey')[0]
+        like_json = requests.post(f"http://db_api:5000/like/{current_user.id}/{product_id}")
+
+        if not like_json.ok:
+            print(f"status code of like: {like_json.status_code}")
+            raise Exception('could not put like, donno what happened :(')
+        
+        if like_json.status_code == 201:
+            print("removing like")
+            status_code = {"code" : "201"}
+        elif like_json.status_code == 200:
+            print("like inserted correctely in database")
+            status_code = {'code' : '200'}
+        else:
+            print(f"obtain status code {like_json.status_code} bo che è ?!")
+    else:
+        print('user not logged in!')
+        status_code = {'code' : '400'}
+    return jsonify(status_code)
 
 
 #register page
@@ -98,10 +136,6 @@ def register():
             'password': password,
         }
         user = requests.post('http://db_api:5000/users/register', json=json_data)
-
-        # if user.ok: # #devo controllare se l'email è già presente nel database
-        #     return render_template("signup.html", user_alive = True)
-        
         if password == password_verify and password_ok:
             user = requests.post('http://db_api:5000/users/login', json=json_data)
             if user.ok:

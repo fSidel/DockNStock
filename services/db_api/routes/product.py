@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
-from models import Products
+from models import Products, Like
 from database import db
 
 product_bp = Blueprint('product', __name__)
@@ -45,7 +45,8 @@ def delete_product(prod_id):
     db.session.commit()
     return jsonify({'message': 'Product deleted'})
 
-@product_bp.route('/products/like')
-def like_product():
-    liked_products = db.session.query(Products).join(Like, Products.id == Like.products_id).filter(Like.users_id == current_user.id).all()
+@product_bp.route('/products/like/<int:current_user>', methods=["GET"])
+def like_product(current_user):
+    liked_products = db.session.query(Products).join(Like, Products.id == Like.products_id).filter(Like.users_id == current_user).all()
     return jsonify([p.to_dict() for p in liked_products])
+
