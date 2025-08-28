@@ -135,16 +135,24 @@ def register():
             'username': username,
             'password': password,
         }
-        user = requests.post('http://db_api:5000/users/register', json=json_data)
         if password == password_verify and password_ok:
-            user = requests.post('http://db_api:5000/users/login', json=json_data)
-            if user.ok:
+            user = requests.post('http://db_api:5000/users/register', json=json_data)
+            if user.ok: 
+                #user is correctly registered
                 user_data = user.json()["user"]
                 usr = Users(user_data["id"], user_data["username"])
                 login_user(usr)                     
                 return redirect(url_for("home"))
-            else:
-                return "SOMETHING BAD HAPPENED! (tipo username > x caratteri)"
+            else:   
+                #user may be logged in    
+                user_log = requests.post('http://db_api:5000/users/login', json=json_data)
+                if user_log.ok:
+                    userlog_data = user_log.json()["user"]
+                    usr2 = Users(userlog_data["id"], user_data["username"])
+                    login_user(usr2)                     
+                    return redirect(url_for("home"))
+                else:
+                    return "SO CAZZI AOAOAOAOA"
         else:
             return render_template("signup.html", password_ok=password_ok, password=password, password_verify=password_verify)
     else:
