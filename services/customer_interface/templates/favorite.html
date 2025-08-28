@@ -1,0 +1,72 @@
+{% extends 'header.html' %}
+{% block contenttop %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='like.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css')}}">
+    <title>TravelHub - Favorite</title>
+</head>
+<body class="intero">
+
+    <video autoplay muted loop id="background-video">
+        <source src="/static/images/sfondo_saved.mp4" type="video/mp4">
+    </video>
+
+    {% endblock %}
+    {% block contentdown %}
+    {% if not session %}
+     <script>
+        window.location.replace("/login");
+      </script>
+    {% else %}
+        {% if liked_products == [] %}
+            <p class="h">So sad, you didn't like any product!</p>
+            <div class="bored"> 
+                {% if e==1 %}
+                    <img src="https://i.imgflip.com/8o7lsm.jpg">
+                {% elif e==2 %}
+                    <img src="https://i.imgflip.com/8o7lyz.jpg">
+                {% elif e==3 %}
+                    <img src="https://i.imgflip.com/8o7m6t.jpg">
+                {% elif e==4 %}
+                    <img src="https://i.imgflip.com/8o7mbe.jpg">
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="h">Your liked products...so you won’t forget them!</p>
+            <div class="foru">
+                {% for product in liked_products %}
+                    <div>
+                        <img class="f" src="{{ product.photo }}" width="600" height="600">
+                        <div class="hov">
+                            <p class="h3 name">{{ product.name }}</p>
+                            <p class="h3 weight">Weight: {{ product.weight }}</p>
+                            <p class="h3 description">Description: {{ product.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+    <button id="top2" class="pulsante4" onclick="onTop()">⬆</button>
+    <script>
+        function onTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("top2").style.display = "block";
+            } else {
+                document.getElementById("top2").style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>
+{% endblock %}

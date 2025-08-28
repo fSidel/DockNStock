@@ -121,6 +121,17 @@ def leave_like():
     return jsonify(status_code)
 
 
+@app.route('/likes', methods = ["GET"])
+def likes():
+    """Render the favorite.html template with the user's likes."""
+    likes_data = requests.get(f"http://db_api:5000/users/{current_user.id}/likes").json()
+    liked_products = []
+    for like in likes_data["likes"]:
+        product = Products(like["id"], like["name"], like["weight"], like["photo"], like["description"])
+        liked_products.append(product)
+    
+    return render_template("favorite.html", liked_products=liked_products)
+
 #register page
 @app.route('/register', methods=["GET", "POST"])
 def register():

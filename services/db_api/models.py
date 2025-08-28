@@ -27,6 +27,10 @@ class Users(UserMixin, db.Model):
             db.session.commit()
         return None
 
+    def get_likes(self):
+        likes = db.session.query(Like).filter_by(users_id=self.id).all()
+        return [like.products_like for like in likes]
+
     def __init__(self, username=None, password=None):
         self.username = username
         self.password = generate_password_hash(password)

@@ -79,3 +79,14 @@ def change_password():
         return jsonify({'message': 'Password changed successfully'}), 200
     
     return jsonify({'error': 'User not found'}), 404
+
+
+@user_bp.route('/users/<int:user_id>/likes', methods=['GET'])
+def get_user_likes(user_id):
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    likes = user.get_likes()
+    likes_data = [product.to_dict() for product in likes]
+    return jsonify({'user_id': user_id, 'likes': likes_data}), 200

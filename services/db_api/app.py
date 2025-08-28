@@ -6,6 +6,7 @@ from routes.user import user_bp
 from routes.product import product_bp
 from routes.like import like_bp
 
+
 import secrets
 
 app = Flask(__name__)

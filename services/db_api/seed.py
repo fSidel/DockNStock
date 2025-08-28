@@ -24,4 +24,5 @@ def seed_products():
         print("✅ Prodotti inseriti nel database.")
 
 if __name__ == "__main__":
+    print("Inizio inserimento prodotti nel database...")
     seed_products()
