@@ -137,12 +137,13 @@ $(document).ready(function() {
                 type: "POST",
                 data: {
                     "comments": text,
-                    "city_key": pkey
+                    "product_key": pkey
                 },
 
                 dataType: 'json',
                 success: function(data) {
-                    var mia_email = data.name;
+                    console.log(data);
+                    var mia_email = data;
                     var div = '<div class="comment"><div class="author"><p>'+mia_email+'</p></div><div class="text"><p>' + text + '</p></div></div>';
                     var lcomments = '#listacommenti'+pkey;
                     var mycomment = "#mycomment"+pkey;

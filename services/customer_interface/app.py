@@ -75,6 +75,10 @@ def home():
     #     truncated_comment = (truncated_username,) + com[1:]  
     #     truncated_comments.append(truncated_comment)
 
+    liked_photos = []
+    saved_photos = []   #da lasciare ? BO!
+    truncated_comments = [] #da rimuovere
+
     products_data = requests.get(f'http://db_api:5000/products').json() #aggiungere controlli
     products_list = []
     for pro in products_data:
@@ -89,9 +93,15 @@ def home():
     
     random.shuffle(products_list)
 
-    liked_photos = []
-    saved_photos = []   #da lasciare ? BO!
-    truncated_comments = [] #da rimuovere
+    # comments = requests.get(f"http://db_api:5000/user_comment/{current_user.id}")
+    # if not comments.ok:
+    #     raise Exception("Something went wrong while catching comments in /home")
+    # comments = comments.json()
+    # for comment in comments:
+    #     comment_said = comment["comment"]
+
+
+   
 
     return render_template("index.html", products=products_list, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
 
@@ -119,6 +129,27 @@ def leave_like():
         print('user not logged in!')
         status_code = {'code' : '400'}
     return jsonify(status_code)
+
+@app.route('/postcomments', methods = ["POST"])
+def post_comments():
+
+    msg_sent = request.form.get('comments')
+    product_id = request.form.get('product_key') #cambiare la city key!
+
+    data = {
+        "user_id":current_user.id,
+        "product_id":product_id,
+        "comment":msg_sent
+    }
+
+    send_comment = requests.post("http://db_api:5000/comment", json=data)
+    if not send_comment.ok:
+        print(send_comment.status_code)
+        raise Exception("Something went wrong")
+    send_comment = send_comment.json()
+    return jsonify(
+        send_comment["user"]["username"]
+    )
 
 
 @app.route('/likes', methods = ["GET"])
