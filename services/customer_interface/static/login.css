@@ -16,7 +16,7 @@ a {
     left: 0;
     height: 100%;
     width: 100%;
-    background-image: url('/static/images/cloud.jpg');
+    background-image: url('/static/images/supermarket.jpeg');
     background-size: cover;
     filter: blur(10px);
     z-index: -1;
