@@ -46,7 +46,7 @@ $(document).ready(function() {
         var sav = document.getElementById('savebtn' + pkey);
         
         $.ajax({
-            url: "/savephoto",
+            url: "/addtocart",
             type: 'POST',
             data: {
                 'primarykey': pkey,
@@ -61,7 +61,7 @@ $(document).ready(function() {
                     sav.style.fontSize = "clamp(1.2rem ,2.8vw, 3.5rem)";
 
                 }
-                else if (code === '202') {
+                else if (code === '201') {
                     sav.style.backgroundColor = "#efff14";
                     sav.style.color = "black";
                     sav.style.fontSize = "clamp(1rem, 1.3vw, 2rem)";

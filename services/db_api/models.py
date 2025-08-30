@@ -85,3 +85,12 @@ class Comments(db.Model):
 
     users_comments = db.relationship("Users", backref=db.backref("users_comments", uselist=False))
     product_has_comments = db.relationship("Products", backref=db.backref("products_has_comment", uselist=False))
+
+class Cart(db.Model):
+    __tablename__ = 'cart'
+    id = db.Column(db.Integer, primary_key=True)
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    products_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+
+    users_puts_in_cart = db.relationship("Users", backref=db.backref("users_puts_in_cart", uselist=False))
+    product_put_in_cart = db.relationship("Products", backref=db.backref("product_put_in_cart", uselist=False))

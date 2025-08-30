@@ -28,41 +28,22 @@
                     <img id = "foto{{ product.id }}" src="{{ product.photo }}" class = "foto" data-value = '{{ product.id }}'>
                     <div class="overlay-text">{{ product.name }}</div>
                 </div>
-            
-
                 <div class="pulsantiera">
-                    {% if not session %}
-                     
-                        <div class="popover__wrapper left">
-                            <button class="like grande pulsante4 ">❤</button>
-                            <div class="popover__content_like">
-                                <p class="popover__message">Sign in first!</p>
-                            </div>
-                        </div>
+                      {% if product.photo in liked %}
+                          <button id = "likebtn{{ product.id }}" class="like grande pulsante" value = '{{ product.id }}' style="background-color: red; font-size: clamp(1.2rem ,2.8vw, 3.5rem);" >❤</button>
+                      {% else %}
+                          <button id = "likebtn{{ product.id }}" class="like grande pulsante" value = '{{ product.id }}'>❤</button>
+                      {% endif %}
 
-                        <div class="popover__wrapper right">
-                            <button class="like grande pulsante4 ">+</button>
-                            <div class="popover__content_save">
-                                <p class="popover__message">Sign in first!</p>
-                            </div>
-                        </div>
-                    {% else %}
-                        {% if product.photo in liked %}
-                            <button id = "likebtn{{ product.id }}" class="like grande pulsante" value = '{{ product.id }}' style="background-color: red; font-size: clamp(1.2rem ,2.8vw, 3.5rem);" >❤</button>
-                        {% else %}
-                            <button id = "likebtn{{ product.id }}" class="like grande pulsante" value = '{{ product.id }}'>❤</button>
-                        {% endif %}
-
-                        
-                            <button id="commentsmodalbtn{{ product.id }}" class="like grande pulsante3 " value = "{{ product.id }}">✎</button>
+                      
+                          <button id="commentsmodalbtn{{ product.id }}" class="like grande pulsante3 " value = "{{ product.id }}">✎</button>
 
 
-                        {% if product.photo in saved %}
-                            <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}' style="background-color: black; color: white; font-size: clamp(1.2rem ,2.8vw, 3.5rem);" >+</button>
-                        {% else %}
-                            <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}'>+</button>
-                        {% endif %}
-                    {% endif %}
+                      {% if product.photo in saved %}
+                          <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}' style="background-color: black; color: white; font-size: clamp(1.2rem ,2.8vw, 3.5rem);" >+</button>
+                      {% else %}
+                          <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}'>🛒</button>
+                      {% endif %}
                 </div>
                 
             </div>
