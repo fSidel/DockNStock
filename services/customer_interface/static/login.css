@@ -1,0 +1,244 @@
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0px;    
+    margin-right: -1px; 
+    margin-left: 0;
+}
+
+a {
+    transition-duration: 0.3s;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url('/static/images/cloud.jpg');
+    background-size: cover;
+    filter: blur(10px);
+    z-index: -1;
+}
+
+#plane {
+    z-index: 0;
+    position: absolute;
+    top: -200%;
+    left: -210%;
+    height: 100%;
+    width: 100%;
+    background-image: url('/static/images/plane.png');
+    background-size: cover;
+    width: 200px;
+    height: 200px;
+    position: relative;
+}
+
+@keyframes planeAnim {
+  0%   {left:-18%; top: -100%; width: 100px; height: 60px; transform: rotate(-5deg);filter: blur(1px);}
+  25% {transform: rotate(20deg);}
+  100% {left: 150%; top: 80%; width: 600px; height: 400px; transform: rotate(40deg); filter: blur(0px);}
+}
+
+.failure{
+    background: #efff14;
+    border-radius: 30px;
+    font-size: 17px;
+    text-align: center;
+    border: none;
+    outline: none;
+    color: #000;
+    font-weight: 500;
+}
+
+.failure a{
+    color: #000;
+    font-weight: 600;
+}
+
+.failure a:hover{
+    text-decoration: none;
+    color: #0000007a;
+}
+
+.login-box{
+    margin-top: 2%;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 30%;
+    height: 65%;
+    padding: 2.5%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffffa9;
+    border-radius: 20%;
+}
+
+
+.login-header{
+    text-align: center;
+    margin: 0 0 10% 0;
+}
+
+.login-header header{
+    color: #333;
+    font-size: clamp(2rem, 2.3vw, 3.3rem); ;
+    font-weight: 600;
+}
+
+.input-box .input-field{
+    align-items: center;
+    width: 90%;
+    height: 60px;
+    font-size: 17px;
+    padding: 0 5%;
+    margin-bottom: 5%;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    box-shadow: 0px 5px 10px 1px #0000003c;
+    transition: .3s;
+}
+
+.small{
+    position: relative;
+    margin-top: 0% ;
+    margin: 0% auto; 
+    display: flex;
+    justify-content: space-between;
+    margin-bottom:  5%;
+}
+
+.small a{
+    color: #000;
+    font-weight: 500;
+}
+
+
+.small a:hover{
+    text-decoration: none;
+    color: #0000007a;
+}
+
+.forget{
+    text-decoration: underline;
+}
+
+.forget:hover{
+    text-decoration: none;
+}
+
+
+.input-submit{
+    position: relative;
+    
+}
+
+.submit-btn{
+    width: 100%;
+    height: 250%;
+    background: #efff14;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .3s;
+    font-weight: 600;
+    font-size: clamp(1em, 0.9vw, 2rem); ;
+}
+
+.sign-up-link{
+    text-align: center;
+    font-size: clamp(1rem, 1vw, 2rem);
+    margin-top: 10%;
+}
+
+.sign-up-link a{
+    color: #000;
+    font-weight: 600;
+}
+
+
+.sign-up-link a:hover{
+    text-decoration: none;
+    color: #0000007a;
+}
+
+.submit-btn:hover{
+    background: #efff146f;
+}
+
+.input-field:hover{
+    transform: scale(1.05,1);
+}
+
+@media (max-width: 1150px) {
+    
+.login-header{
+        margin: 0;
+    }
+
+    .login-box {
+        width: 60%; 
+        height: 68%; 
+    }
+
+    @keyframes planeAnim {
+        0%   {left:-30%; top: -100%; width: 100px; height: 60px; transform: rotate(-5deg);filter: blur(1px);} 
+        25% {transform: rotate(20deg);}
+        100% {left: 150%; top: 80%; width: 600px; height: 400px; transform: rotate(40deg); filter: blur(0px);}
+    }
+
+    .submit-btn{
+        width: 100%;
+        height: 60px;
+        background: #efff14;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .submit-btn:hover{
+        scale: 1.03;
+    }
+
+    .failure{
+        width: 80%;
+        margin-left: 10%;
+    }
+
+}
+
+@media (max-width: 760px) {
+    html, body {
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        position: fixed; 
+    }
+
+    .login-box {
+        width: 80%; 
+        height: 68%; 
+    }
+
+    .background {
+        position: fixed; 
+    }
+
+    #plane {
+        position: fixed;
+    }
+
+    @keyframes planeAnim {
+        0% { left: -30%; top: 10%; width: 100px; height: 60px; transform: rotate(-5deg); filter: blur(1px); }
+        25% { transform: rotate(20deg); }
+        100% { left: 150%; top: 40%; width: 600px; height: 400px; transform: rotate(40deg); filter: blur(0px); }
+    }
+}
