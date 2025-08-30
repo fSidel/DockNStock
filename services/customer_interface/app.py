@@ -159,6 +159,34 @@ def leave_like():
         status_code = {'code' : '400'}
     return jsonify(status_code)
 
+@app.route('/addtocart', methods = ["POST"])
+def addtocart():
+    form_sent = request.form
+    #if user is logged in
+    if current_user.is_authenticated:
+        product_id = form_sent.getlist('primarykey')[0]
+        data = {
+            "user_id":current_user.id,
+            "product_id":product_id
+        }
+        cart_json = requests.post(f"http://db_api:5000/cart", json=data)
+        if not cart_json.ok:
+            print(f"status code of cart: {cart_json.status_code}")
+            raise Exception('could not put into cart, donno what happened :(')
+        
+        if cart_json.status_code == 201:
+            print("removing item from cart")
+            status_code = {"code" : "201"}
+        elif cart_json.status_code == 200:
+            print("item in cart inserted correctely in database")
+            status_code = {'code' : '200'}
+        else:
+            print(f"obtain status code {cart_json.status_code} bo che è ?!")
+    else:
+        print('user not logged in!')
+        status_code = {'code' : '400'}
+    return jsonify(status_code)
+
 @app.route('/postcomments', methods = ["POST"])
 def post_comments():
 
@@ -208,22 +236,18 @@ def register():
         }
         if password == password_verify and password_ok:
             user = requests.post('http://db_api:5000/users/register', json=json_data)
-            if user.ok: 
+            if user.status_code == 201: 
                 #user is correctly registered
                 user_data = user.json()["user"]
-                usr = Users(user_data["id"], user_data["username"])
+                puppet_usr_id = user_data["id"]
+                puppet_dat_id = user_data["username"]
+                usr = Users(puppet_usr_id, puppet_dat_id)
                 login_user(usr)                     
                 return redirect(url_for("home"))
-            else:   
-                #user may be logged in    
-                user_log = requests.post('http://db_api:5000/users/login', json=json_data)
-                if user_log.ok:
-                    userlog_data = user_log.json()["user"]
-                    usr2 = Users(userlog_data["id"], user_data["username"])
-                    login_user(usr2)                     
-                    return redirect(url_for("home"))
-                else:
-                    return "SO CAZZI AOAOAOAOA"
+            elif user.status_code == 409: 
+                return render_template("signup.html", user_alive=True)
+            else:
+                return "user doesn't have a password or a username"
         else:
             return render_template("signup.html", password_ok=password_ok, password=password, password_verify=password_verify)
     else:
