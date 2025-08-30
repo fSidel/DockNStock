@@ -36,6 +36,16 @@ class Products:
         self.photo = photo
         self.description = description
 
+class Comments:
+    def __init__(self, comments_id: int, users_username: str, product_id: int, comment: str):
+        self.comment_id = comments_id
+        self.username = users_username
+        self.product_id = product_id
+        self.comment = comment
+
+    def __str__(self):
+        return f"Comment(id={self.comment_id}, user={self.username}, product_id={self.product_id}, comment={self.comment})"
+
 # User loader function
 @login_manager.user_loader
 def load_user(user_id):
@@ -93,6 +103,28 @@ def home():
     
     random.shuffle(products_list)
 
+    comments_response = requests.get(f"http://db_api:5000/get_comments").json()
+    print("Comments response from backend:", comments_response)
+
+    comments_list = []
+    print("Processing comments...")
+    for comment in comments_response:
+        print("Processing comment:", comment)
+        # Extract the required fields
+        comment_id = comment["comment_id"]
+        product_id = comment["product"]["id"]
+        user_username = comment["user"]["username"]
+        comment_text = comment["comment"]
+
+        # Create a Comments object with the extracted fields
+        comments_on_product = Comments(comment_id, user_username, product_id, comment_text)
+        print("Created Comments object:", comments_on_product.comment_id, comments_on_product.username, comments_on_product.product_id, comments_on_product.comment)
+
+        comments_list.append(comments_on_product)
+
+    for comment in comments_list:
+        print("Final comment in list:", comment)
+
     # comments = requests.get(f"http://db_api:5000/user_comment/{current_user.id}")
     # if not comments.ok:
     #     raise Exception("Something went wrong while catching comments in /home")
@@ -100,10 +132,7 @@ def home():
     # for comment in comments:
     #     comment_said = comment["comment"]
 
-
-   
-
-    return render_template("index.html", products=products_list, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
+    return render_template("index.html", products=products_list, liked=liked_photos, saved=saved_photos, db_comments = comments_list)
 
 @app.route('/leavealike', methods = ["POST"])
 def leave_like():
