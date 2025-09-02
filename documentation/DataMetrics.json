@@ -1,0 +1,39 @@
+[
+  {
+    "set_id": 1,
+    "set_name": "Customer Auth & Identity",
+    "user_stories": [1, 2, 3, 4],
+    "links": [2, 3, 4],
+    "db": true
+  },
+  {
+    "set_id": 2,
+    "set_name": "Product Catalog (Customer)",
+    "user_stories": [5, 6],
+    "links": [1, 3, 4],
+    "db": true
+  },
+  {
+    "set_id": 3,
+    "set_name": "Engagement (Likes & Comments)",
+    "user_stories": [7, 8, 9, 10, 11],
+    "links": [1, 2],
+    "db": true
+  },
+  {
+    "set_id": 4,
+    "set_name": "Cart & Order Submission",
+    "user_stories": [12, 13, 14, 15, 16],
+    "links": [1, 2],
+    "db": true
+  },
+  // TO CHECK
+  {
+    "set_id": 5,
+    "set_name": "Business Auth & Identity",
+    "user_stories": [17, 18, 19, 20],
+    "links": [],
+    "db": true
+  }
+]
+
