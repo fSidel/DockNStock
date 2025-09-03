@@ -69,12 +69,12 @@ class Supermarkets(UserMixin, db.Model):
     #     products = SELECT TABLETODEFINE.PRODUCTS FROM TABLETODEFINE JOIN SUPERMARKETS ON SUP.supid = TABLETODEFINE.supid
     #     return all products
 
-    def __init__(self, username=None, password=None):
-        self.username = username
+    def __init__(self, supermarketname=None, password=None):
+        self.supermarketname = supermarketname
         self.password = generate_password_hash(password)
 
     def __repr__(self):
-        return f'<Supermarket {self.username}>'
+        return f'<Supermarket {self.supermarketname}>'
 
     def to_dict(self):
         return {"id": self.id, "supermarketname": self.supermarketname}

@@ -12,14 +12,14 @@ def register():
 
     if not username or not password:
         return jsonify({'error': 'Username and password required'}), 400
-    if Supermarkets.query.filter_by(username=username).first():
+    if Supermarkets.query.filter_by(supermarketname=username).first():
         return jsonify({'error': 'Username already exists'}), 409
     
     supermarket = Supermarkets(supermarketname=username, password=password)
     db.session.add(supermarket)
     db.session.commit()
     
-    return jsonify({'message': 'User registered', 'user': supermarket.to_dict()}), 201
+    return jsonify({'message': 'User registered', 'supermarket': supermarket.to_dict()}), 201
 
 
 @supermarket_bp.route('/supermarkets/login', methods=['POST'])
@@ -29,7 +29,7 @@ def login():
     password = data.get('password')
     supermarket = Supermarkets.query.filter_by(supermarketname=username).first()
     if supermarket and supermarket.check_password(password): 
-        return jsonify({'message': 'Logged in', 'user': supermarket.to_dict()}), 200
+        return jsonify({'message': 'Logged in', 'supermarket': supermarket.to_dict()}), 200
     
     return jsonify({'error': 'Invalid credentials'}), 401
 
@@ -39,7 +39,7 @@ def login():
 def check_user(user_id):
     user = Supermarkets.query.get(user_id)  # get by primary key
     if user:
-        return jsonify({"exists": True, "user": user.to_dict()})
+        return jsonify({"exists": True, "supermarket": user.to_dict()})
     else:
         return jsonify({"exists": False, "message": "User not found"}), 404
 

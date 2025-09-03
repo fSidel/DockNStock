@@ -25,7 +25,7 @@ login_manager.login_message = "Please log in to access this page"
 class Supermarkets(UserMixin):
     def __init__(self, supermarket_id, username):
         self.id = supermarket_id
-        self.username = username
+        self.supermarketname = username
 
 class Products:
     def __init__(self, id: int, name: str, weight: str, photo: str, description: str):
@@ -37,10 +37,10 @@ class Products:
 
 @login_manager.user_loader
 def load_user(user_id):
-    jsn_data = requests.get(f'http://db_api:5000/users/{user_id}')
-    spr_data_for_login = jsn_data.json()["user"]
+    jsn_data = requests.get(f'http://db_api:5000/supermarkets/{user_id}')
+    spr_data_for_login = jsn_data.json()["supermarket"]
     puppet_spr = Supermarkets(
-        spr_data_for_login["id"], spr_data_for_login["username"]
+        spr_data_for_login["id"], spr_data_for_login["supermarketname"]
     )
     return puppet_spr 
    #there are no checks!
@@ -70,12 +70,12 @@ def register():
             'password': password,
         }
         if password == password_verify and password_ok:
-            user = requests.post('http://db_api:5000/users/register', json=json_data)
+            user = requests.post('http://db_api:5000/supermarkets/register', json=json_data)
             if user.status_code == 201: 
                 #user is correctly registered
-                user_data = user.json()["user"]
+                user_data = user.json()["supermarket"]
                 puppet_superm_id = user_data["id"]
-                puppet_superm_dat_id = user_data["username"]
+                puppet_superm_dat_id = user_data["supermarketname"]
                 spr = Supermarkets(puppet_superm_id, puppet_superm_dat_id)
                 login_user(spr)                     
                 return redirect(url_for("home"))
@@ -98,10 +98,10 @@ def login():
             'username': username,
             'password': password_verify,
         }
-        user = requests.post('http://db_api:5000/users/login', json=json_data)
+        user = requests.post('http://db_api:5000/supermarkets/login', json=json_data)
         if user.ok:    
-            user_data = user.json()["user"]
-            spr = Supermarkets(user_data["id"], user_data["username"])
+            user_data = user.json()["supermarket"]
+            spr = Supermarkets(user_data["id"], user_data["supermarketname"])
             login_user(spr)            
             return redirect(url_for("home"))
         else:
@@ -193,3 +193,10 @@ def confirm_forget(token):
         
     else:
         return render_template("confirm_forgot.html")
+
+
+#home page
+@app.route("/home")
+@login_required
+def home():
+    return "daje roma"
