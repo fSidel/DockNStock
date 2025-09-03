@@ -1,0 +1,62 @@
+{% extends 'header.html' %}
+{% block contenttop %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='login.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css')}}">
+    <title>StockNDock - Forgot</title>
+
+</head>
+<body class="intero">
+    {% endblock %}
+    {% block contentdown %}
+    <div class="background"></div>
+    <form method="post">
+    <div class="login-box">
+
+        <div class="login-header">
+            <header>Password recovery</header>
+        </div>
+
+        <form action = "POST">
+            <div class="input-box">
+                <input type="text" name = "username_input" class="input-field" placeholder="Email" autocomplete="Email" required>
+            </div>
+
+        <br>
+        <div class="input-submit">
+            <button class="submit-btn" id="submit">Send email</button>
+        </div>
+        <br>
+        <br>
+        <br>
+        
+            {% if user_alive == False %}
+                <div class = "failure">
+                    <p>User is not registered, you have to first  <a href="/register">sign up</a> to change password!</p>
+                </div>
+            {% endif %}
+
+            {% if email_sent == True %}
+                <div class = "failure">
+                    <p>Email sent successfully!</p>
+                    <p>Click on the link in the email!</p>
+                </div>
+            {% endif %}
+            
+            {% if bad_user == True %}
+                <div class = "failure">
+                    <p>You have to enter the password who we sent the email to!</p>
+                </div>
+            {% endif %}
+
+        </div>
+    </form>
+</body>
+</html>
+{% endblock %}

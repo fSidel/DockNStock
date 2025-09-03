@@ -1,0 +1,61 @@
+{% extends 'header.html' %}
+{% block contenttop %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='login.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css')}}">
+    <title>StockNDock - Forgot</title>
+
+</head>
+<body class="intero">
+    {% endblock %}
+    {% block contentdown %}
+    <div class="background"></div>
+    <form method="post">
+    <div class="login-box">
+
+        <div class="login-header">
+            <header>Password recovery</header>
+        </div>
+
+        <form action = "POST">
+            <div class="input-box">
+                <input type="password" name = "password_input1" id = "password_input1" class="input-field" placeholder="New Password" autocomplete="new-password" required>
+            </div>
+
+            <div class="input-box">
+                <input type="password" name = "password_input2" id = "password_input2" class="input-field" placeholder="Type Again" autocomplete="new-password" required>
+            </div>
+
+            <br>
+
+            <div class="input-submit">
+                <button class="submit-btn" id="submit">Reset email</button>                
+            </div>
+           <br>
+            </form>
+
+            {% if password_match == False %}
+                <br>
+                <div class = "failure" >
+                    <p>Passwords don't match!</p>
+                </div>
+            {% endif %}
+
+            {% if password_quality == False %}
+                <br>
+                <div class = "failure">
+                    <p>Password is too simple!</p>
+                </div>
+            {% endif %}
+        </div>
+    </form>
+    
+</body>
+</html>
+{% endblock %}

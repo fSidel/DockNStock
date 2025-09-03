@@ -41,6 +41,43 @@ class Users(UserMixin, db.Model):
     def to_dict(self):
         return {"id": self.id, "username": self.username}
 
+class Supermarkets(UserMixin, db.Model):
+    __tablename__ = 'supermarkets'
+    id = db.Column(db.Integer, primary_key=True)
+    supermarketname = db.Column(db.String(30), nullable=False, unique=True)
+    password = db.Column(db.String(250), nullable=False)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    @staticmethod
+    def get_supermarket(supermarketname):
+        return db.session.query(Supermarkets).filter_by(supermarketname=supermarketname).first()
+    
+    @staticmethod
+    def change_password(supermarketname, new_password):
+        supermarket = db.session.query(Supermarkets).filter_by(supermarketname=supermarketname).first()
+        if supermarket:
+            supermarket.set_password(new_password)
+            db.session.commit()
+        return None
+
+    # def get_products of supermarket(self, supid):
+    #     products = SELECT TABLETODEFINE.PRODUCTS FROM TABLETODEFINE JOIN SUPERMARKETS ON SUP.supid = TABLETODEFINE.supid
+    #     return all products
+
+    def __init__(self, username=None, password=None):
+        self.username = username
+        self.password = generate_password_hash(password)
+
+    def __repr__(self):
+        return f'<Supermarket {self.username}>'
+
+    def to_dict(self):
+        return {"id": self.id, "supermarketname": self.supermarketname}
 
 class Products(db.Model):
     __tablename__ = 'products'

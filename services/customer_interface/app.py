@@ -60,20 +60,6 @@ def generate_reset_token():
 @app.route("/home")
 @login_required
 def home():
-    #products=Cities.query.all()
-
-    # db_comments = db.session.query(
-    #     Users.username,
-    #     Comments.cities_id,
-    #     Comments.comment
-    # ).join(Comments, Users.id == Comments.users_id).all()
-
-    # truncated_comments = []
-    # for com in db_comments:
-    #     ind = com[0].index('@')
-    #     truncated_username = com[0][:ind]  
-    #     truncated_comment = (truncated_username,) + com[1:]  
-    #     truncated_comments.append(truncated_comment)
 
     liked_photos = []
     saved_photos = []   #da lasciare ? BO!
@@ -92,17 +78,6 @@ def home():
         liked_list.append(liked_product)
     
     random.shuffle(products_list)
-
-    # comments = requests.get(f"http://db_api:5000/user_comment/{current_user.id}")
-    # if not comments.ok:
-    #     raise Exception("Something went wrong while catching comments in /home")
-    # comments = comments.json()
-    # for comment in comments:
-    #     comment_said = comment["comment"]
-
-
-   
-
     return render_template("index.html", products=products_list, liked=liked_photos, saved=saved_photos, db_comments = list(reversed(truncated_comments)))
 
 @app.route('/leavealike', methods = ["POST"])
