@@ -72,4 +72,22 @@ def get_comments_by_user(user_id):
 
     return jsonify(results), 200
 
+@comment_bp.route("/product_comments/<int:product_id>", methods=["GET"])
+def get_comments_by_product(product_id):
+    product = Products.query.get(product_id)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    comments = Comments.query.filter_by(products_id=product_id).all()
+
+    results = []
+    for c in comments:
+        results.append({
+            "comment_id": c.id,
+            "comment": c.comment,
+            "user": c.users_comments.to_dict(),
+        })
+
+    return jsonify(results), 200
+
 

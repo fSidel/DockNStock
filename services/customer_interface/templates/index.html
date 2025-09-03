@@ -66,21 +66,20 @@
           </div>
           <div class="modal-body">
             
-            <div class="comments" id="listacommenti{{ product.id }}">
-              {% for db_comment in db_comments %}
-                {% if db_comment[1] == product.id %}
-                  <div class="comment">
-                    <div class="author">
-                      <p>{{ db_comment[0] }}</p>
-                    </div>
-                    <div class="text">
-                      <p>{{ db_comment[2] }}</p>
-                    </div>
-                  </div>
-                {% else %}
-                {% endif %}
-              {% endfor %}
-          </div>
+        <div class="comments" id="listacommenti{{ product.id }}">
+          {% for comment in db_comments %}
+            {% if comment.product_id == product.id %}
+              <div class="comment">
+                <div class="author">
+                  <p><strong>{{ comment.username }}</strong></p>
+                </div>
+                <div class="text">
+                  <p>{{ comment.comment }}</p>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
 
           </div>
           <div class="modal-footer">
