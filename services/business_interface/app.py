@@ -199,4 +199,4 @@ def confirm_forget(token):
 @app.route("/home")
 @login_required
 def home():
-    return "daje roma"
+    return render_template("index.html")
