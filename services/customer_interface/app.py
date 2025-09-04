@@ -173,6 +173,33 @@ def addtocart():
         status_code = {'code' : '400'}
     return jsonify(status_code)
 
+@app.route('/shopping_cart', methods = ["GET"])
+@login_required
+def shopping_cart():
+    """Render the shopping_cart.html template with the user's cart items."""
+    # Fetch cart items from the cart service
+    response = requests.get(f"http://db_api:5000/cart/{current_user.id}")
+    
+    if not response.ok:
+        print(f"Failed to fetch cart items: {response.status_code}")
+        return render_template("shopping_cart.html", cart_items=[])
+
+    cart_data = response.json()
+    cart_items = []
+
+    # Process the cart data
+    for item in cart_data:
+        product = Products(
+            id=item["product_id"],
+            name=item["name"],
+            weight=item["weight"],
+            photo=item["photo"],
+            description=item["description"]
+        )
+        cart_items.append(product)
+
+    return render_template("shopping_cart.html", cart_items=cart_items)
+
 @app.route('/postcomments', methods = ["POST"])
 def post_comments():
 
@@ -345,3 +372,27 @@ def confirm_forget(token):
         
     else:
         return render_template("confirm_forgot.html")
+
+@app.route('/remove_from_cart', methods=["POST"])
+@login_required
+def remove_from_cart():
+    """Remove a product from the user's cart."""
+    data = request.json
+    product_id = data.get("product_id")
+
+    if not product_id:
+        return jsonify({"error": "Product ID is required"}), 400
+
+    # Prepare the request payload
+    payload = {
+        "user_id": current_user.id,
+        "product_id": product_id
+    }
+
+    # Call the API in cart.py to remove the product
+    response = requests.post("http://db_api:5000/cart/remove", json=payload)
+
+    if response.ok:
+        return jsonify({"message": "Product removed from cart"}), 200
+    else:
+        return jsonify({"error": "Failed to remove product from cart"}), response.status_code

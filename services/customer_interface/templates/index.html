@@ -36,14 +36,11 @@
                       {% endif %}
 
                       
-                          <button id="commentsmodalbtn{{ product.id }}" class="like grande pulsante3 " value = "{{ product.id }}">✎</button>
+                      <button id="commentsmodalbtn{{ product.id }}" class="like grande pulsante3 " value = "{{ product.id }}">✎</button>
 
 
-                      {% if product.photo in saved %}
-                          <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}' style="background-color: black; color: white; font-size: clamp(1.2rem ,2.8vw, 3.5rem);" >+</button>
-                      {% else %}
-                          <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}'>🛒</button>
-                      {% endif %}
+                      <button id = "savebtn{{ product.id }}" class="like grande pulsante2" value = '{{ product.id }}'>🛒</button>
+
                 </div>
                 
             </div>
