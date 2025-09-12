@@ -396,3 +396,50 @@ def remove_from_cart():
         return jsonify({"message": "Product removed from cart"}), 200
     else:
         return jsonify({"error": "Failed to remove product from cart"}), response.status_code
+
+@app.route('/place_orders', methods=["POST"])
+@login_required
+def place_orders():
+    """Send order data to order service and clear items from cart if successful."""
+    data = request.json  # Get the JSON data from the request
+    print("Received order data:", data)  # Debug log
+
+    if not data or "cart_items" not in data:
+        return jsonify({"error": "Order data must include cart_items"}), 400
+
+    try:
+        # Send order to external order service
+        response = requests.post(
+            "http://localhost:5001/receive_orders",
+            json={
+                "user_id": current_user.id,
+                "cart_items": data["cart_items"]
+            },
+            timeout=5
+        )
+    except requests.RequestException as e:
+        print("Error contacting order service:", e)
+        return jsonify({"error": "Could not reach order service"}), 502
+
+    if response.ok:
+        # Order accepted → remove items from cart
+        for item in data["cart_items"]:
+            product_id = item.get("product_id")
+            if not product_id:
+                continue
+
+            payload = {
+                "user_id": current_user.id,
+                "product_id": product_id
+            }
+            remove_response = requests.post(
+                "http://db_api:5000/cart/remove",
+                json=payload
+            )
+            if not remove_response.ok:
+                print(f"Failed to remove product {product_id} from cart")
+
+        return jsonify({"message": "Order placed and cart updated"}), 200
+    else:
+        return jsonify({"error": "Order service rejected order"}), response.status_code
+
