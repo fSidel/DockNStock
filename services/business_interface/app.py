@@ -195,8 +195,30 @@ def confirm_forget(token):
         return render_template("confirm_forgot.html")
 
 
-#home page
+
 @app.route("/home")
 @login_required
 def home():
-    return render_template("index.html")
+    return redirect(url_for('available_products'))
+
+
+@app.route("/add_products")
+@login_required
+def add_product():
+    return render_template("add_product.html")
+
+@app.route('/available_products', methods=["GET"])
+@login_required
+def available_products():
+    """Fetch all products from the db_api and render the available_products.html template."""
+    # Fetch products from the db_api
+    response = requests.get("http://db_api:5000/products")
+    
+    if response.ok:
+        products = response.json()  # Parse the JSON response
+    else:
+        products = []  # If the request fails, use an empty list
+
+    # Pass the products to the template
+    return render_template("available_products.html", products=products)
+
