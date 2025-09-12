@@ -216,9 +216,29 @@ def available_products():
     
     if response.ok:
         products = response.json()  # Parse the JSON response
+        print(products)
     else:
         products = []  # If the request fails, use an empty list
 
     # Pass the products to the template
     return render_template("available_products.html", products=products)
+
+@app.route('/update_quantity', methods=["POST"])
+@login_required
+def update_quantity():
+    """Update the quantity of a product in the database."""
+    data = request.json
+    product_id = data.get("product_id")
+    quantity = data.get("quantity")
+
+    if not product_id or quantity is None:
+        return jsonify({"error": "Product ID and quantity are required"}), 400
+
+    # Forward the request to the db_api
+    response = requests.put(f"http://db_api:5000/products/{product_id}/quantity", json={"quantity": quantity})
+
+    if response.ok:
+        return jsonify({"message": "Quantity updated successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to update quantity in the database"}), response.status_code
 

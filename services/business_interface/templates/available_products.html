@@ -220,8 +220,8 @@
                             <div class="stock-actions">
                                 <label for="quantity-{{ product.id }}">Stock Quantity:</label>
                                 <input type="number" id="quantity-{{ product.id }}" name="quantity" 
-                                       min="0" value="{{ product.stock }}" class="quantity-input">
-                                <button class="update-button" onclick="updateStock('{{ product.id }}')">Update</button>
+                                       min="0" value="{{ product.quantity }}" class="quantity-input">
+                                <button class="update-button" onclick="updateQuantity('{{ product.id }}')">Update</button>
                             </div>
                         </div>
                     </div>
@@ -272,6 +272,36 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred while updating stock.');
+            });
+        }
+
+        function updateQuantity(productId) {
+            // Get the new quantity from the input field
+            const newQuantity = document.getElementById('quantity-' + productId).value;
+
+            // Send the updated quantity to the backend
+            fetch('/update_quantity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: newQuantity
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Quantity updated successfully!');
+                } else {
+                    response.json().then(data => {
+                        alert(data.error || 'Failed to update quantity.');
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the quantity.');
             });
         }
     </script>

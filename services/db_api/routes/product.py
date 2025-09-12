@@ -12,7 +12,8 @@ def create_product():
         name=data.get('name'),
         weight=data.get('weight'),
         photo=data.get('photo'),
-        description=data.get('description')
+        description=data.get('description'),
+        quantity=data.get('quantity', 0)
     )
     db.session.add(prod)
     db.session.commit()
@@ -50,3 +51,23 @@ def like_product(current_user):
     liked_products = db.session.query(Products).join(Like, Products.id == Like.products_id).filter(Like.users_id == current_user).all()
     return jsonify([p.to_dict() for p in liked_products])
 
+@product_bp.route('/products/<int:prod_id>/quantity', methods=['GET'])
+def get_quantity(prod_id):
+    p = Products.query.get_or_404(prod_id)
+    return jsonify({'product_id': prod_id, 'quantity': p.quantity})
+
+@product_bp.route('/products/<int:prod_id>/quantity', methods=['PUT'])
+def update_quantity(prod_id):
+    p = Products.query.get_or_404(prod_id)
+    data = request.get_json()
+    if 'quantity' not in data:
+        return jsonify({'error': 'Quantity is required'}), 400
+    
+    try:
+        new_quantity = int(data['quantity'])
+    except ValueError:
+        return jsonify({'error': 'Quantity must be an integer'}), 400
+    
+    p.quantity = new_quantity
+    db.session.commit()
+    return jsonify({'message': 'Quantity updated', 'product_id': prod_id, 'quantity': p.quantity})

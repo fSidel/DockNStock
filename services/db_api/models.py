@@ -86,12 +86,14 @@ class Products(db.Model):
     weight = db.Column(db.String(100), nullable=False)
     photo = db.Column(db.String(10000), nullable=False)
     description = db.Column(db.String(100), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=0)
 
-    def __init__(self, name=None, weight=None, photo=None, description=None):
+    def __init__(self, name=None, weight=None, photo=None, description=None, quantity=0):
         self.name = name
         self.weight = weight
         self.photo = photo
         self.description = description
+        self.quantity = quantity
 
     def __repr__(self):
         return f'<Product {self.name}>'
@@ -103,6 +105,7 @@ class Products(db.Model):
             "weight": self.weight,
             "photo": self.photo,
             "description": self.description,
+            "quantity": self.quantity,  
         }
 
 class Like(db.Model):
