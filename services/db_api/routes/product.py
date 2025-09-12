@@ -71,3 +71,54 @@ def update_quantity(prod_id):
     p.quantity = new_quantity
     db.session.commit()
     return jsonify({'message': 'Quantity updated', 'product_id': prod_id, 'quantity': p.quantity})
+
+@product_bp.route('/products/<int:prod_id>/image', methods=['PUT'])
+def update_image(prod_id):
+    """Update the image of a product."""
+    p = Products.query.get_or_404(prod_id)
+    data = request.get_json()
+    if 'photo' not in data:
+        return jsonify({'error': 'Image URL is required'}), 400
+    
+    p.photo = data['photo']
+    db.session.commit()
+    return jsonify({'message': 'Image updated', 'product_id': prod_id, 'photo': p.photo})
+
+
+@product_bp.route('/products/<int:prod_id>/description', methods=['PUT'])
+def update_description(prod_id):
+    """Update the description of a product."""
+    p = Products.query.get_or_404(prod_id)
+    data = request.get_json()
+    if 'description' not in data:
+        return jsonify({'error': 'Description is required'}), 400
+    
+    p.description = data['description']
+    db.session.commit()
+    return jsonify({'message': 'Description updated', 'product_id': prod_id, 'description': p.description})
+
+
+@product_bp.route('/products/<int:prod_id>/weight', methods=['PUT'])
+def update_weight(prod_id):
+    """Update the weight of a product."""
+    p = Products.query.get_or_404(prod_id)
+    data = request.get_json()
+    if 'weight' not in data:
+        return jsonify({'error': 'Weight is required'}), 400
+    
+    p.weight = data['weight']
+    db.session.commit()
+    return jsonify({'message': 'Weight updated', 'product_id': prod_id, 'weight': p.weight})
+
+
+@product_bp.route('/products/<int:prod_id>/name', methods=['PUT'])
+def update_name(prod_id):
+    """Update the name of a product."""
+    p = Products.query.get_or_404(prod_id)
+    data = request.get_json()
+    if 'name' not in data:
+        return jsonify({'error': 'Name is required'}), 400
+    
+    p.name = data['name']
+    db.session.commit()
+    return jsonify({'message': 'Name updated', 'product_id': prod_id, 'name': p.name})
