@@ -242,3 +242,69 @@ def update_quantity():
     else:
         return jsonify({"error": "Failed to update quantity in the database"}), response.status_code
 
+@app.route('/update_product', methods=["POST"])
+@login_required
+def update_product():
+    """Update all attributes of a product in the database."""
+    data = request.json
+    product_id = data.get("product_id")
+    name = data.get("name")
+    weight = data.get("weight")
+    photo = data.get("photo")
+    description = data.get("description")
+
+    # Validate that all fields are provided
+    if not product_id or not name or not weight or not photo or not description:
+        return jsonify({"error": "All fields (product_id, name, weight, photo, description) are required"}), 400
+
+    # Update each attribute using the respective API
+    errors = []
+
+    # Update name
+    response = requests.put(f"http://db_api:5000/products/{product_id}/name", json={"name": name})
+    if not response.ok:
+        errors.append("Failed to update name")
+
+    # Update weight
+    response = requests.put(f"http://db_api:5000/products/{product_id}/weight", json={"weight": weight})
+    if not response.ok:
+        errors.append("Failed to update weight")
+
+    # Update photo
+    response = requests.put(f"http://db_api:5000/products/{product_id}/image", json={"photo": photo})
+    if not response.ok:
+        errors.append("Failed to update photo")
+
+    # Update description
+    response = requests.put(f"http://db_api:5000/products/{product_id}/description", json={"description": description})
+    if not response.ok:
+        errors.append("Failed to update description")
+
+    # Check for errors
+    if errors:
+        return jsonify({"error": "Failed to update product", "details": errors}), 500
+
+    return jsonify({"message": "Product updated successfully"}), 200
+
+@app.route('/update_product_form', methods=["POST"])
+@login_required
+def update_product_form():
+    """Retrieve product details and render the modify_product.html form."""
+    product_id = request.form.get('product_id')
+
+    print(f"Received product_id: {product_id}")
+
+    if not product_id:
+        return jsonify({"error": "Product ID is required"}), 400
+
+    # Fetch product details from the db_api
+    response = requests.get(f"http://db_api:5000/products/{product_id}")
+    
+    if response.ok:
+        product = response.json()  # Parse the product data
+    else:
+        return jsonify({"error": "Failed to fetch product details"}), response.status_code
+
+    # Render the modify_product.html template with the product data
+    return render_template("modify_product.html", product=product)
+
