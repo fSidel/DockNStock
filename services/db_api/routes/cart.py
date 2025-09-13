@@ -87,3 +87,20 @@ def remove_from_cart():
     db.session.commit()
 
     return jsonify({"message": "Product removed from cart"}), 200
+
+
+@cart_bp.route("/cart_id/<int:user_id>", methods=["GET"])
+def get_cart_id(user_id):
+    """Retrieve the cart ID for a given user ID."""
+    # Check if the user exists
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Retrieve the cart for the user
+    cart = Cart.query.filter_by(users_id=user_id).first()
+    if not cart:
+        return jsonify({"error": "Cart not found for the user"}), 404
+
+    # Return the cart ID
+    return jsonify({"cart_id": cart.id}), 200

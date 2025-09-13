@@ -130,7 +130,7 @@ class Comments(db.Model):
 
 class Cart(db.Model):
     __tablename__ = 'cart'
-    id = db.Column(db.Integer, primary_key=True)  # keep legacy integer ID
+    id = db.Column(db.Integer, primary_key=True)  
     tracking_code = db.Column(db.String(8), unique=True, nullable=False)
 
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -160,3 +160,49 @@ class Cart(db.Model):
             candidate = cls._generate_tracking_code()
             if not db.session.query(cls).filter_by(tracking_code=candidate).first():
                 return candidate
+
+class Orders(db.Model):
+    __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True)  # Unique order ID
+    tracking_code = db.Column(db.String(8), nullable=False)  # Tracking code for the order
+    supermarket_id = db.Column(db.Integer, db.ForeignKey('supermarkets.id'), nullable=False)  # Link to Supermarkets
+    user_id = db.Column(db.Integer, nullable=False)  # User who placed the order
+    products = db.Column(db.JSON, nullable=False)  # JSON field to store product details
+
+    # Relationships
+    supermarket = db.relationship("Supermarkets", backref=db.backref("orders", lazy=True))
+
+    def __init__(self, cart, supermarket_id):
+        """
+        Initialize the Orders object with data from the Cart.
+        :param cart: Cart object containing the data to transfer.
+        :param supermarket_id: ID of the supermarket receiving the order.
+        """
+        self.tracking_code = cart.tracking_code
+        self.supermarket_id = supermarket_id
+        self.user_id = cart.users_id
+
+        # Extract product details from the cart and store them as JSON
+        self.products = [
+            {
+                "product_id": cart_item.products_id,
+                "quantity": 1,  # Assuming quantity is 1 per cart entry (adjust if needed)
+                "name": cart_item.product_put_in_cart.name,
+                "weight": cart_item.product_put_in_cart.weight,
+                "photo": cart_item.product_put_in_cart.photo,
+                "description": cart_item.product_put_in_cart.description,
+            }
+            for cart_item in Cart.query.filter_by(id=cart.id).all()
+        ]
+
+    def __repr__(self):
+        return f'<Order {self.id} - Tracking Code: {self.tracking_code}>'
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "tracking_code": self.tracking_code,
+            "supermarket_id": self.supermarket_id,
+            "user_id": self.user_id,
+            "products": self.products,
+        }
