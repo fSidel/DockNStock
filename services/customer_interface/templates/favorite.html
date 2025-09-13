@@ -41,7 +41,7 @@
             <p class="h">Your liked products...so you won’t forget them!</p>
             <div class="foru">
                 {% for product in liked_products %}
-                    <div>
+                    <div class="card">
                         <img class="f" src="{{ product.photo }}" width="600" height="600">
                         <div class="hov">
                             <p class="h3 name">{{ product.name }}</p>
@@ -49,8 +49,8 @@
                             <p class="h3 description">Description: {{ product.description }}</p>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+    {% endfor %}
+</div>
         {% endif %}
     {% endif %}
     <button id="top2" class="pulsante4" onclick="onTop()">⬆</button>
