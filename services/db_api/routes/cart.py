@@ -19,16 +19,16 @@ def adds_to_cart():
     if not user or not product:
         return jsonify({"error": "User or Product not found"}), 404
 
-    # Check if the like already exists
+    # Check if the cart already exists
     cart = Cart.query.filter_by(users_id=user_id, products_id=product_id).first()
     
     if cart:
-        # Remove existing like
+        # Remove existing cart
         db.session.delete(cart)
         db.session.commit()
         return jsonify({"message": "Like removed"}), 201
     else:
-        # Add new like
+        # Add new cart
         new_cart = Cart(users_id=user_id, products_id=product_id)
         db.session.add(new_cart)
         db.session.commit()
