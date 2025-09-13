@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+import random
+import string
 from database import db
 
 class Users(UserMixin, db.Model):
@@ -128,9 +130,33 @@ class Comments(db.Model):
 
 class Cart(db.Model):
     __tablename__ = 'cart'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)  # keep legacy integer ID
+    tracking_code = db.Column(db.String(8), unique=True, nullable=False)
+
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     products_id = db.Column(db.Integer, db.ForeignKey('products.id'))
 
-    users_puts_in_cart = db.relationship("Users", backref=db.backref("users_puts_in_cart", uselist=False))
-    product_put_in_cart = db.relationship("Products", backref=db.backref("product_put_in_cart", uselist=False))
+    users_puts_in_cart = db.relationship(
+        "Users", backref=db.backref("users_puts_in_cart", uselist=False)
+    )
+    product_put_in_cart = db.relationship(
+        "Products", backref=db.backref("product_put_in_cart", uselist=False)
+    )
+
+    def __init__(self, users_id, products_id):
+        self.tracking_code = self._unique_tracking_code()
+        self.users_id = users_id
+        self.products_id = products_id
+
+    @classmethod
+    def _generate_tracking_code(cls):
+        """Generate an 8-char uppercase letters + digits code"""
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+    @classmethod
+    def _unique_tracking_code(cls):
+        """Generate a unique tracking code by checking the database"""
+        while True:
+            candidate = cls._generate_tracking_code()
+            if not db.session.query(cls).filter_by(tracking_code=candidate).first():
+                return candidate
