@@ -1,0 +1,76 @@
+{% extends 'header.html' %}
+{% block contenttop %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='orders.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css')}}">
+    <title>StockNDock - Incoming Orders</title>
+</head>
+<body class="intero">
+
+    <video autoplay muted loop id="background-video">
+        <source src="/static/images/sfondo_saved.mp4" type="video/mp4">
+    </video>
+
+{% endblock %}
+{% block contentdown %}
+    {% if not session %}
+        <script>
+            window.location.replace("/login");
+        </script>
+    {% else %}
+        {% if orders == [] %}
+            <p class="h">No orders have been taken yet!</p>
+            <div class="bored"> 
+                <img src="https://i.imgflip.com/8o7lsm.jpg" alt="No Orders">
+            </div>
+        {% else %}
+            <p class="h">Incoming Orders</p>
+            <div class="orders-container">
+                {% for order in orders %}
+                    <div class="order-card">
+                        <h3 class="order-title">Order #{{ order.id }}</h3>
+                        <p class="order-tracking">Tracking Code: {{ order.tracking_code }}</p>
+                        <p class="order-supermarket">Supermarket ID: {{ order.supermarket_id }}</p>
+                        <p class="order-user">User ID: {{ order.user_id }}</p>
+                        <h4 class="order-products-title">Products:</h4>
+                        <ul class="order-products-list">
+                            {% for product in order.products %}
+                                <li class="order-product-item">
+                                    <img class="product-photo" src="{{ product.photo }}" alt="{{ product.name }}">
+                                    <div class="product-details">
+                                        <p class="product-name">Name: {{ product.name }}</p>
+                                        <p class="product-weight">Weight: {{ product.weight }}</p>
+                                        <p class="product-description">Description: {{ product.description }}</p>
+                                        <p class="product-quantity">Quantity: {{ product.quantity }}</p>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+    <button id="top2" class="pulsante4" onclick="onTop()">⬆</button>
+    <script>
+        function onTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("top2").style.display = "block";
+            } else {
+                document.getElementById("top2").style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>
+{% endblock %}

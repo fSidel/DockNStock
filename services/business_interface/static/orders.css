@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+body {
+    background-color: #929292;
+    overflow-x: hidden;
+    margin: 0;
+    animation: colori ease-in-out 8s infinite;
+
+}
+
+@keyframes colori {
+    0% {background-color: #545454;}
+    25% {background-color: #444444;}
+    50% {background-color: #303030;}
+    75% {background-color: #1e1f1e;}
+    100% {background-color: #545454;}
+}
+
+#background-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -10;
+}
+
+.sup{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+img {
+    width: 60%;
+    object-fit: cover;
+    object-fit: cover; /*per le proporzioni delle foto*/
+    transition-duration: 0.3s;
+    box-shadow: 0 8px 16px 0 #00000033, 0 6px 20px 0 #00000030;
+}
+
+.f {
+    border-radius: 10%;
+    max-height: 350px;
+}
+
+/*ingrandire le immagini su saved quando ci passo sopra*/
+.f:hover{
+    scale: 1.07;
+}
+
+a {
+    text-decoration: none;
+}
+
+.hov:hover .name {
+    color: #efff1450;
+    font-size: clamp(0.7rem, 1.3vw, 1.5rem);;
+}
+
+p {
+    transition: .3s;
+    font-family: 'Poppins',sans-serif;
+    display: flex;
+    justify-content: center;
+    color: aliceblue;
+    color: #000000;
+    font-weight: 500;
+}
+
+.textcontainer p{
+    color: aliceblue;
+    font-weight: 400;
+}
+
+.h {
+    font-size: clamp(1.8rem, 2.3vw, 3.3rem); 
+    text-align: center;
+}
+
+.h1 {
+    font-size: clamp(2rem, 3.5vw, 3.3rem); 
+    text-align: center;
+}
+
+.h2 {
+    margin-top: 5%;
+    margin-bottom: 0px;
+    font-size: clamp(1.4rem, 2vw, 3.3rem); 
+    text-align: center;
+}
+
+.h3 {
+    font-size: clamp(1.3rem, 1.8vw, 3rem); 
+    text-align: center;
+}
+
+.name {
+    margin: 0;
+    padding: 10%;
+}
+
+.foru2img {
+    max-height: 550px; 
+}
+
+#top{
+    max-width: 100%; 
+    height: auto; 
+    max-height: 60vh;
+}
+
+
+.ticket {
+    margin-top: 10px; 
+    z-index: 100;
+}
+
+
+.center{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    margin: 0;
+}
+
+.scorrimento{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    gap:3%;
+    scale: 0.8;
+}
+
+.scorrimento img {
+    max-width: 100%; 
+    height: auto; 
+}
+
+.minor {
+    max-height: 500px;
+    height: auto; 
+}
+
+
+.foru {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1% 3%;
+    justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 2%; 
+}
+  
+.foru img {
+    width: 100%;
+    height: auto; 
+    max-width: 100%;
+}
+
+#top2 {
+    display: none;
+    position: fixed; 
+    bottom: 5%; 
+    right: 5%; 
+    z-index: 99; 
+    cursor: pointer;
+    font-size: 150%;
+    font-weight: bolder;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.bored {
+    position: absolute;
+    top: 30%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+}
+
+.bored img {
+    width: 40%;
+    height: auto;
+    max-width: 100%; 
+    border-radius: 5%;
+}
+
+.bored img:hover {
+    scale: 1;
+}
+
+.form-secondario{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: red;
+    left:45%;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+
+
+@media (max-width: 1050px) {
+    .foru {
+        grid-template-columns: repeat(3, 1fr);
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+    .f {
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 760px) {
+    .foru {
+      grid-template-columns: repeat(2, 1fr);
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+    
+    .f {
+        max-height: 200px;
+    }
+
+    .h, .h2{
+        margin-left: 15%;
+        margin-right: 10%;
+    }
+
+    .scorrimento{
+        position: relative;
+        display: flex;
+        width: 100%; 
+        gap: 40px;
+        scale: 0.8;
+        flex-direction: column;
+        align-items: center; 
+    }
+}
+
+.card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
