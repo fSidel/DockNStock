@@ -13,7 +13,6 @@ def create_product():
         weight=data.get('weight'),
         photo=data.get('photo'),
         description=data.get('description'),
-        quantity=data.get('quantity', 0)
     )
     db.session.add(prod)
     db.session.commit()

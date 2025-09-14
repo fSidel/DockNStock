@@ -88,14 +88,13 @@ class Products(db.Model):
     weight = db.Column(db.String(100), nullable=False)
     photo = db.Column(db.String(10000), nullable=False)
     description = db.Column(db.String(100), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False, default=0)
+    
 
-    def __init__(self, name=None, weight=None, photo=None, description=None, quantity=0):
+    def __init__(self, name=None, weight=None, photo=None, description=None):
         self.name = name
         self.weight = weight
         self.photo = photo
         self.description = description
-        self.quantity = quantity
 
     def __repr__(self):
         return f'<Product {self.name}>'
@@ -107,7 +106,6 @@ class Products(db.Model):
             "weight": self.weight,
             "photo": self.photo,
             "description": self.description,
-            "quantity": self.quantity,  
         }
 
 class Like(db.Model):
@@ -117,6 +115,17 @@ class Like(db.Model):
 
     users_like = db.relationship("Users", backref=db.backref("users_like", uselist=False))
     products_like = db.relationship("Products", backref=db.backref("products_like", uselist=False))
+
+class Owns(db.Model):
+    __tablename__ = 'owns'
+    market_id = db.Column(db.Integer, db.ForeignKey('supermarkets.id'), primary_key = True)
+    products_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key = True)
+    quantity = db.Column(db.Integer, nullable=False, default=0)
+
+
+    supermarket_owns = db.relationship("Supermarkets", backref=db.backref("supermarket_owns", uselist=False))
+    products_like = db.relationship("Products", backref=db.backref("products_owned", uselist=False))
+
 
 class Comments(db.Model):
     __tablename__ = 'comments'

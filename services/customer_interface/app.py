@@ -443,9 +443,6 @@ def place_orders():
     #     return jsonify({"message": "Order placed and cart updated"}), 200
     # else:
     #     return jsonify({"error": "Order service rejected order"}), response.status_code
-    data = request.json
-    print("Received order:", data)
-
 
     #1) trace supermarket having these products
     # SELCT SUPERMARKETS JOIN HAS WHERE SUPERMARKET.ID = PRODUCTS_ID *.first()*

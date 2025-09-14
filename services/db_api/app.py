@@ -8,6 +8,7 @@ from routes.like import like_bp
 from routes.comment import comment_bp
 from routes.cart import cart_bp
 from routes.supermarket import supermarket_bp
+from routes.owns import owns_bp
 
 
 import secrets
@@ -54,6 +55,7 @@ app.register_blueprint(like_bp)
 app.register_blueprint(comment_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(supermarket_bp)
+app.register_blueprint(owns_bp)
 
 
 

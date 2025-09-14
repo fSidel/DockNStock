@@ -19,7 +19,7 @@
     <h1>Add Product</h1>
     <p class="lead">Enter product details and upload a photo. The form posts <code>multipart/form-data</code>.</p>
 
-    <form id="productForm" action="/products" method="POST" enctype="multipart/form-data" novalidate>
+    <form id="productForm" action="/add_products" method="POST">
 
       <div class="row cols-2">
         <div>
@@ -32,17 +32,17 @@
         </div>
       </div>
 
-      <div>
-        <label for="photo">Photo</label>
-        <label id="dropArea" class="uploader" for="photoInput" tabindex="0" aria-describedby="photoHelp">
-          <img id="thumb" class="thumb" alt="preview" />
-          <div class="meta">
-            <div><strong id="dropText">Drag & drop a photo here, or click to select</strong></div>
-            <div id="photoHelp" class="small">JPEG/PNG image</div>
-          </div>
-          <input id="photoInput" name="photo" type="file" accept="image/*" style="display:none" />
-        </label>
-        <div id="photoError" class="error" role="alert" aria-live="polite" hidden></div>
+      
+
+      <div id="imageUploader">
+        <label for="imageUrl">Image URL</label>
+        <input type="text" id="imageUrl" name="imageUrl" placeholder="Paste image URL here" />
+        <button id="loadImage">Load Image</button>
+
+        <div id="previewContainer" style="margin-top: 10px;">
+          <img id="thumb" alt="Image preview" style="max-width: 200px; max-height: 200px; display: none;" />
+          <div id="urlDisplay" style="margin-top: 5px; font-size: 0.9em; color: #555;"></div>
+        </div>
       </div>
 
       <div>
