@@ -61,3 +61,8 @@ def change_password():
         return jsonify({'message': 'Password changed successfully'}), 200
     
     return jsonify({'error': 'User not found'}), 404
+
+# @supermarket_bp.route("supermarkets/get_super_by_products", methods=["GET"])
+# def get_superbyprod():
+#     data = request.get_json()
+    

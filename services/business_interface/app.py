@@ -235,7 +235,7 @@ def update_quantity():
         return jsonify({"error": "Product ID and quantity are required"}), 400
 
     # Forward the request to the db_api
-    response = requests.put(f"http://db_api:5000/products/{product_id}/quantity", json={"quantity": quantity})
+    response = requests.put(f"http://db_api:5000/products/{product_id}/quantity", json={"quantity": quantity})  #questo è un bug
 
     if response.ok:
         return jsonify({"message": "Quantity updated successfully"}), 200

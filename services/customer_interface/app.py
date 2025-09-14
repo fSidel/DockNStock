@@ -10,7 +10,8 @@ import re
 import secrets
 import logging
 import random
-logging.basicConfig(level=logging.DEBUG)
+import sys
+logging.basicConfig(level=logging.DEBUG,stream=sys.stdout)
 
 app = Flask(__name__)
 app.permanent_session_lifetime = timedelta(minutes=40)
@@ -400,46 +401,62 @@ def remove_from_cart():
 @app.route('/place_orders', methods=["POST"])
 @login_required
 def place_orders():
-    """Send order data to order service and clear items from cart if successful."""
-    data = request.json  # Get the JSON data from the request
-    print("Received order data:", data)  # Debug log
+    # """Send order data to order service and clear items from cart if successful."""
+    # data = request.json  # Get the JSON data from the request
+    # print("Received order data:", data)  # Debug log
 
-    if not data or "cart_items" not in data:
-        return jsonify({"error": "Order data must include cart_items"}), 400
+    # if not data or "cart_items" not in data:
+    #     return jsonify({"error": "Order data must include cart_items"}), 400
 
-    try:
-        # Send order to external order service
-        response = requests.post(
-            "http://localhost:5001/receive_orders",
-            json={
-                "user_id": current_user.id,
-                "cart_items": data["cart_items"]
-            },
-            timeout=5
-        )
-    except requests.RequestException as e:
-        print("Error contacting order service:", e)
-        return jsonify({"error": "Could not reach order service"}), 502
+    # try:
+    #     # Send order to external order service
+    #     response = requests.post(
+    #         "http://localhost:5001/receive_orders",
+    #         json={
+    #             "user_id": current_user.id,
+    #             "cart_items": data["cart_items"]
+    #         },
+    #         timeout=5
+    #     )
+    # except requests.RequestException as e:
+    #     print("Error contacting order service:", e)
+    #     return jsonify({"error": "Could not reach order service"}), 502
 
-    if response.ok:
-        # Order accepted → remove items from cart
-        for item in data["cart_items"]:
-            product_id = item.get("product_id")
-            if not product_id:
-                continue
+    # if response.ok:
+    #     # Order accepted → remove items from cart
+    #     for item in data["cart_items"]:
+    #         product_id = item.get("product_id")
+    #         if not product_id:
+    #             continue
 
-            payload = {
-                "user_id": current_user.id,
-                "product_id": product_id
-            }
-            remove_response = requests.post(
-                "http://db_api:5000/cart/remove",
-                json=payload
-            )
-            if not remove_response.ok:
-                print(f"Failed to remove product {product_id} from cart")
+    #         payload = {
+    #             "user_id": current_user.id,
+    #             "product_id": product_id
+    #         }
+    #         remove_response = requests.post(
+    #             "http://db_api:5000/cart/remove",
+    #             json=payload
+    #         )
+    #         if not remove_response.ok:
+    #             print(f"Failed to remove product {product_id} from cart")
 
-        return jsonify({"message": "Order placed and cart updated"}), 200
-    else:
-        return jsonify({"error": "Order service rejected order"}), response.status_code
+    #     return jsonify({"message": "Order placed and cart updated"}), 200
+    # else:
+    #     return jsonify({"error": "Order service rejected order"}), response.status_code
+    data = request.json
+    print("Received order:", data)
 
+
+    #1) trace supermarket having these products
+    # SELCT SUPERMARKETS JOIN HAS WHERE SUPERMARKET.ID = PRODUCTS_ID *.first()*
+
+    
+
+    #2) create a order object (supermarket, user)
+
+    #3) delete products.id from saved_in_cart where products.id = data.products_id
+
+    #somehow the supermarket must save which products the user ordered
+
+    # Here you would insert into DB, clear cart, etc.
+    return jsonify({"status": "success", "message": "Order placed successfully"}),200
