@@ -401,6 +401,8 @@ def remove_from_cart():
 @app.route('/place_orders', methods=["POST"])
 @login_required
 def place_orders():
+    #TODO!
+
     # """Send order data to order service and clear items from cart if successful."""
     # data = request.json  # Get the JSON data from the request
     # print("Received order data:", data)  # Debug log
@@ -443,17 +445,4 @@ def place_orders():
     #     return jsonify({"message": "Order placed and cart updated"}), 200
     # else:
     #     return jsonify({"error": "Order service rejected order"}), response.status_code
-
-    #1) trace supermarket having these products
-    # SELCT SUPERMARKETS JOIN HAS WHERE SUPERMARKET.ID = PRODUCTS_ID *.first()*
-
-    
-
-    #2) create a order object (supermarket, user)
-
-    #3) delete products.id from saved_in_cart where products.id = data.products_id
-
-    #somehow the supermarket must save which products the user ordered
-
-    # Here you would insert into DB, clear cart, etc.
     return jsonify({"status": "success", "message": "Order placed successfully"}),200
