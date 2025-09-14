@@ -46,7 +46,7 @@ $(document).ready(function() {
         var sav = document.getElementById('savebtn' + pkey);
         
         $.ajax({
-            url: "/addtocart",
+            url: "/addtowants",
             type: 'POST',
             data: {
                 'primarykey': pkey,

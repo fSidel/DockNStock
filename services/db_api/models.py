@@ -126,6 +126,15 @@ class Owns(db.Model):
     supermarket_owns = db.relationship("Supermarkets", backref=db.backref("supermarket_owns", uselist=False))
     products_like = db.relationship("Products", backref=db.backref("products_owned", uselist=False))
 
+class Wants(db.Model):
+    __tablename__ = 'wants'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    products_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key = True)
+    quantity = db.Column(db.Integer, nullable=False, default=0)
+
+
+    user_wants = db.relationship("Users", backref=db.backref("user_wants", uselist=False))
+    products_like = db.relationship("Products", backref=db.backref("products_wanted", uselist=False))
 
 class Comments(db.Model):
     __tablename__ = 'comments'
@@ -139,81 +148,3 @@ class Comments(db.Model):
 
 
 
-# class Cart(db.Model):
-#     __tablename__ = 'cart'
-#     id = db.Column(db.Integer, primary_key=True)  
-#     tracking_code = db.Column(db.String(8), unique=True, nullable=False)
-
-#     users_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-#     products_id = db.Column(db.Integer, db.ForeignKey('products.id'))
-
-#     users_puts_in_cart = db.relationship(
-#         "Users", backref=db.backref("users_puts_in_cart", uselist=False)
-#     )
-#     product_put_in_cart = db.relationship(
-#         "Products", backref=db.backref("product_put_in_cart", uselist=False)
-#     )
-
-#     def __init__(self, users_id, products_id):
-#         self.tracking_code = self._unique_tracking_code()
-#         self.users_id = users_id
-#         self.products_id = products_id
-
-#     @classmethod
-#     def _generate_tracking_code(cls):
-#         """Generate an 8-char uppercase letters + digits code"""
-#         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-
-#     @classmethod
-#     def _unique_tracking_code(cls):
-#         """Generate a unique tracking code by checking the database"""
-#         while True:
-#             candidate = cls._generate_tracking_code()
-#             if not db.session.query(cls).filter_by(tracking_code=candidate).first():
-#                 return candidate
-
-# class Orders(db.Model):
-#     __tablename__ = 'orders'
-#     id = db.Column(db.Integer, primary_key=True)  # Unique order ID
-#     tracking_code = db.Column(db.String(8), nullable=False)  # Tracking code for the order
-#     supermarket_id = db.Column(db.Integer, db.ForeignKey('supermarkets.id'), nullable=False)  # Link to Supermarkets
-#     user_id = db.Column(db.Integer, nullable=False)  # User who placed the order
-#     products = db.Column(db.JSON, nullable=False)  # JSON field to store product details
-
-#     # Relationships
-#     supermarket = db.relationship("Supermarkets", backref=db.backref("orders", lazy=True))
-
-#     def __init__(self, cart, supermarket_id):
-#         """
-#         Initialize the Orders object with data from the Cart.
-#         :param cart: Cart object containing the data to transfer.
-#         :param supermarket_id: ID of the supermarket receiving the order.
-#         """
-#         self.tracking_code = cart.tracking_code
-#         self.supermarket_id = supermarket_id
-#         self.user_id = cart.users_id
-
-#         # Extract product details from the cart and store them as JSON
-#         self.products = [
-#             {
-#                 "product_id": cart_item.products_id,
-#                 "quantity": 1,  # Assuming quantity is 1 per cart entry (adjust if needed)
-#                 "name": cart_item.product_put_in_cart.name,
-#                 "weight": cart_item.product_put_in_cart.weight,
-#                 "photo": cart_item.product_put_in_cart.photo,
-#                 "description": cart_item.product_put_in_cart.description,
-#             }
-#             for cart_item in Cart.query.filter_by(id=cart.id).all()
-#         ]
-
-#     def __repr__(self):
-#         return f'<Order {self.id} - Tracking Code: {self.tracking_code}>'
-
-#     def to_dict(self):
-#         return {
-#             "id": self.id,
-#             "tracking_code": self.tracking_code,
-#             "supermarket_id": self.supermarket_id,
-#             "user_id": self.user_id,
-#             "products": self.products,
-#         }

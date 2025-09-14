@@ -146,50 +146,57 @@ def leave_like():
         status_code = {'code' : '400'}
     return jsonify(status_code)
 
-@app.route('/addtocart', methods = ["POST"])
-def addtocart():
+@app.route('/addtowants', methods=["POST"])
+def addtowants():
     form_sent = request.form
-    #if user is logged in
+
     if current_user.is_authenticated:
         product_id = form_sent.getlist('primarykey')[0]
+
         data = {
-            "user_id":current_user.id,
-            "product_id":product_id
+            "user_id": current_user.id,
+            "product_id": product_id,
+            "quantity": 1
         }
-        cart_json = requests.post(f"http://db_api:5000/cart", json=data)
-        if not cart_json.ok:
-            print(f"status code of cart: {cart_json.status_code}")
-            raise Exception('could not put into cart, donno what happened :(')
-        
-        if cart_json.status_code == 201:
-            print("removing item from cart")
-            status_code = {"code" : "201"}
-        elif cart_json.status_code == 200:
-            print("item in cart inserted correctely in database")
-            status_code = {'code' : '200'}
+
+        wants_response = requests.post("http://db_api:5000/wants", json=data)
+
+        if not wants_response.ok:
+            print(f"status code of wants: {wants_response.status_code}")
+            raise Exception("Could not add to wants, something went wrong :(")
+
+        if wants_response.status_code == 201:
+            print("item added to wants (new entry created)")
+            status_code = {"code": "201"}
+        elif wants_response.status_code == 200:
+            print("item already existed, updated correctly in wants")
+            status_code = {"code": "200"}
         else:
-            print(f"obtain status code {cart_json.status_code} bo che è ?!")
+            print(f"Unexpected status code {wants_response.status_code}")
+            status_code = {"code": str(wants_response.status_code)}
+
     else:
-        print('user not logged in!')
-        status_code = {'code' : '400'}
+        print("user not logged in!")
+        status_code = {"code": "400"}
+
     return jsonify(status_code)
 
-@app.route('/shopping_cart', methods = ["GET"])
+@app.route('/shopping_cart', methods=["GET"])
 @login_required
 def shopping_cart():
-    """Render the shopping_cart.html template with the user's cart items."""
-    # Fetch cart items from the cart service
-    response = requests.get(f"http://db_api:5000/cart/{current_user.id}")
+    """Render the shopping_cart.html template with the user's wanted products."""
+    # Fetch wanted products from the Wants API
+    response = requests.get(f"http://db_api:5000/wants/{current_user.id}")
     
     if not response.ok:
-        print(f"Failed to fetch cart items: {response.status_code}")
+        print(f"Failed to fetch wanted products: {response.status_code}")
         return render_template("shopping_cart.html", cart_items=[])
 
-    cart_data = response.json()
+    wanted_data = response.json()
     cart_items = []
 
-    # Process the cart data
-    for item in cart_data:
+    # Process the wanted products data
+    for item in wanted_data:
         product = Products(
             id=item["product_id"],
             name=item["name"],
@@ -197,9 +204,40 @@ def shopping_cart():
             photo=item["photo"],
             description=item["description"]
         )
+        # Optionally, you can store the quantity from the Wants table if needed:
+        product.quantity = item.get("quantity", 1)
         cart_items.append(product)
 
     return render_template("shopping_cart.html", cart_items=cart_items)
+
+
+@app.route('/shopping_cart_update', methods=["POST"])
+@login_required
+def shopping_cart_update():
+    data = request.get_json()
+    product_id = data.get("product_id")
+    quantity = data.get("quantity")
+
+    if not product_id or quantity is None:
+        return jsonify({"error": "Fields 'product_id' and 'quantity' are required."}), 400
+
+    payload = {
+        "user_id": current_user.id,
+        "product_id": product_id,
+        "quantity": quantity
+    }
+
+    try:
+        response = requests.put("http://db_api:5000/wants", json=payload)
+
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to update quantity in db_api.", "details": response.json()}), response.status_code
+
+        return jsonify(response.json()), 200
+
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "Could not connect to db_api.", "details": str(e)}), 500
+
 
 @app.route('/postcomments', methods = ["POST"])
 def post_comments():
@@ -374,29 +412,29 @@ def confirm_forget(token):
     else:
         return render_template("confirm_forgot.html")
 
-@app.route('/remove_from_cart', methods=["POST"])
+@app.route('/remove_from_wants', methods=["POST"])
 @login_required
-def remove_from_cart():
-    """Remove a product from the user's cart."""
+def remove_from_wants():
+    """Remove a product from the user's wants list."""
     data = request.json
     product_id = data.get("product_id")
 
     if not product_id:
         return jsonify({"error": "Product ID is required"}), 400
 
-    # Prepare the request payload
+    # Prepare payload for wants API
     payload = {
         "user_id": current_user.id,
         "product_id": product_id
     }
 
-    # Call the API in cart.py to remove the product
-    response = requests.post("http://db_api:5000/cart/remove", json=payload)
+    # Call the wants API route
+    response = requests.post("http://db_api:5000/wants/remove", json=payload)
 
     if response.ok:
-        return jsonify({"message": "Product removed from cart"}), 200
+        return jsonify({"message": "Product removed from wants"}), 200
     else:
-        return jsonify({"error": "Failed to remove product from cart"}), response.status_code
+        return jsonify({"error": "Failed to remove product from wants"}), response.status_code
 
 @app.route('/place_orders', methods=["POST"])
 @login_required
