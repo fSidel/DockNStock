@@ -1,7 +1,7 @@
 from os import environ
 from flask import Flask
 from database import db
-from models import Users, Products
+from models import Users, Products, Supermarkets, Owns
 from routes.user import user_bp
 from routes.product import product_bp
 from routes.like import like_bp
@@ -22,7 +22,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
     #add elements only if products table is 
-    """ if not Products.query.first():
+    if not Products.query.first():
         products = [
         Products(name="Mele", weight="1kg", photo="https://www.laboutiquedelbiologico.it/4860-medium_default/mele-stark-biologiche-500-g.jpg", description="Mele rosse"),
         Products(name="Banane", weight="1kg", photo="https://www.focus.it/site_stored/imgs/0005/030/banane.1020x680.jpg", description="Banane"),
@@ -46,9 +46,47 @@ with app.app_context():
         Products(name="Acqua Naturale", weight="1.5L", photo="https://www.bordopalermo.it/public/images/acqua%20no%20logo.jpg", description="Acqua minerale naturale"),
         Products(name="Aranciata", weight="1.5L", photo="https://media.istockphoto.com/id/1460988855/it/foto/succo-darancia-in-una-bottiglia-di-vetro.jpg?s=612x612&w=0&k=20&c=D0r7qTeaslWhf1npfqfzi4Pi94N3NvwgVUGa9bKNnkI=", description="Bevanda analcolica all'arancia")
         ]
+        
         db.session.add_all(products)
         db.session.commit()
-        print("✅ Prodotti inseriti nel database.") """
+        print("✅ Prodotti inseriti nel database.") 
+    
+    if not Supermarkets.query.first():
+        supermarkets = [
+            Supermarkets(supermarketname="Mercato1@gmail.com", password="Mercato1@gmail.com"),
+            Supermarkets(supermarketname="Mercato2@gmail.com", password="Mercato2@gmail.com"),
+            Supermarkets(supermarketname="Mercato3@gmail.com", password="Mercato3@gmail.com")
+        ]
+        for supermarket in supermarkets:
+            supermarket.set_password(supermarket.password)  
+        db.session.add_all(supermarkets)
+        db.session.commit()
+        print("Inseriti supermercati nel database.")
+
+    if not Owns.query.first():
+        supermarkets = Supermarkets.query.all()
+        products = Products.query.all()
+
+        owns_relationships = [
+            Owns(market_id=supermarkets[0].id, products_id=products[0].id, quantity=10),
+            Owns(market_id=supermarkets[0].id, products_id=products[1].id, quantity=20),
+            Owns(market_id=supermarkets[0].id, products_id=products[2].id, quantity=15),
+            Owns(market_id=supermarkets[0].id, products_id=products[3].id, quantity=25),
+
+            Owns(market_id=supermarkets[1].id, products_id=products[4].id, quantity=30),
+            Owns(market_id=supermarkets[1].id, products_id=products[5].id, quantity=40),
+            Owns(market_id=supermarkets[1].id, products_id=products[6].id, quantity=35),
+            Owns(market_id=supermarkets[1].id, products_id=products[7].id, quantity=45),
+
+            Owns(market_id=supermarkets[2].id, products_id=products[0].id, quantity=50),
+            Owns(market_id=supermarkets[2].id, products_id=products[1].id, quantity=60),
+            Owns(market_id=supermarkets[2].id, products_id=products[4].id, quantity=55),
+            Owns(market_id=supermarkets[2].id, products_id=products[5].id, quantity=65)
+        ]
+        db.session.add_all(owns_relationships)
+        db.session.commit()
+        print("Assegnati prodotti ai supermercati nel database.")
+
 
 app.register_blueprint(user_bp)
 app.register_blueprint(product_bp)
