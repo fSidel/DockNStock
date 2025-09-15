@@ -8,6 +8,14 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+.h {
+    font-size: clamp(1.8rem, 2.3vw, 3.3rem);
+    text-align: center;   /* center horizontally */
+    color: #ffffff;       /* make text white */
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
 @keyframes colori {
     0% {background-color: #545454;}
     25% {background-color: #444444;}
