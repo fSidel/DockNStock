@@ -355,11 +355,12 @@ def incoming_orders():
     View all orders assigned to the current supermarket, grouped by user.
     """
     supermarket_id = current_user.id
+    print(f"Supermarket ID: {supermarket_id}")  # Debugging line
 
     # Call the API route that groups orders by user
     response = requests.get(f"http://db_api:5000/supermarket_orders/grouped/{supermarket_id}")
 
     grouped_orders = response.json()  # This will be a dict: {user_id: [orders]}
-    print(f"Grouped Orders: {grouped_orders}")  # Debugging line
+    print(f"Grouped Orders: {grouped_orders}")  # Debugging lin
 
-    return render_template("add_product.html")
+    return render_template("incoming_orders.html", grouped_orders=grouped_orders)
