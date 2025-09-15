@@ -57,8 +57,6 @@ with app.app_context():
             Supermarkets(supermarketname="Mercato2@gmail.com", password="Mercato2@gmail.com"),
             Supermarkets(supermarketname="Mercato3@gmail.com", password="Mercato3@gmail.com")
         ]
-        for supermarket in supermarkets:
-            supermarket.set_password(supermarket.password)  
         db.session.add_all(supermarkets)
         db.session.commit()
         print("Inseriti supermercati nel database.")
