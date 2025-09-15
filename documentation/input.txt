@@ -2,7 +2,7 @@
 
 DockNStock is a distributed retail platform that connects supermarkets with end customers.  
 The system allows customers to register and log in, browse products, like them, comment on them and manage a shopping cart to place orders.  
-Supermarkets can register on the platform, receive incoming orders and manage their catalogs by adding products. 
+Supermarkets can register on the platform, receive incoming orders and manage their catalogs by adding products and updating stock. 
 The architecture is based on Dockerized microservices, ensuring scalability, modularity and easy deployment.  
 
 ---
@@ -17,7 +17,7 @@ The architecture is based on Dockerized microservices, ensuring scalability, mod
 5) As a Customer, I want to view all available products, so that I can choose what to buy  
 6) As a Customer, I want to view product details, so that I can evaluate them before buying  
 7) As a Customer, I want to like a product, so that I can express my preference  
-** 8) As a Customer, I want to unlike a product, so that I can change my mind  
+8) As a Customer, I want to unlike a product, so that I can change my mind  
 9) As a Customer, I want to view the list of liked products, so that I can access them quickly  
 10) As a Customer, I want to comment on a product, so that I can share my opinion  
 11) As a Customer, I want to view product comments, so that I can read other users’ feedback  
@@ -33,5 +33,7 @@ The architecture is based on Dockerized microservices, ensuring scalability, mod
 21) As a Supermarket, I want to logout, so that I can end my session securely  
 22) As a Supermarket, I want to recover my password, so that I can regain access to my account  
 23) As a Supermarket, I want to add new products, so that I can expand my catalog  
-** 24) As a Supermarket, I want to view my products, so that I can manage them  
+24) As a Supermarket, I want to view the list of all products offered across the platform, so that I can compare my catalog with competitors 
 25) As a Supermarket, I want to view received orders, so that I can process them
+26) As a Supermarket, I want to update the details of my products, so that the catalog is always accurate
+27) As a Supermarket, I want to update only the quantity of a product, so that stock levels are kept accurate
