@@ -137,6 +137,28 @@
         });
     });
 
+    function placeOrder() {
+    fetch('/place_orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (response.ok) {
+            alert(data.message || "Your order has been placed successfully!");
+            window.location.href = "/shopping_cart"; // redirect back to cart
+        } else {
+            alert(data.error || "Failed to place your order.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while placing your order.');
+    });
+}
+
     </script>
 
 </body>

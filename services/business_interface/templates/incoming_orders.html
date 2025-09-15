@@ -1,14 +1,14 @@
 {% extends 'header.html' %}
-{% block contenttop %}
 
+{% block contenttop %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename='orders.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='header.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='orders.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css') }}">
     <title>StockNDock - Incoming Orders</title>
 </head>
 <body class="intero">
@@ -18,13 +18,14 @@
     </video>
 
 {% endblock %}
+
 {% block contentdown %}
     {% if not session %}
         <script>
             window.location.replace("/login");
         </script>
     {% else %}
-        {% if orders == [] %}
+        {% if not grouped_orders %}
             <p class="h">No orders have been taken yet!</p>
             <div class="bored"> 
                 <img src="https://i.imgflip.com/8o7lsm.jpg" alt="No Orders">
@@ -32,23 +33,20 @@
         {% else %}
             <p class="h">Incoming Orders</p>
             <div class="orders-container">
-                {% for order in orders %}
-                    <div class="order-card">
-                        <h3 class="order-title">Order #{{ order.id }}</h3>
-                        <p class="order-tracking">Tracking Code: {{ order.tracking_code }}</p>
-                        <p class="order-supermarket">Supermarket ID: {{ order.supermarket_id }}</p>
-                        <p class="order-user">User ID: {{ order.user_id }}</p>
-                        <h4 class="order-products-title">Products:</h4>
-                        <ul class="order-products-list">
-                            {% for product in order.products %}
-                                <li class="order-product-item">
-                                    <img class="product-photo" src="{{ product.photo }}" alt="{{ product.name }}">
-                                    <div class="product-details">
-                                        <p class="product-name">Name: {{ product.name }}</p>
-                                        <p class="product-weight">Weight: {{ product.weight }}</p>
-                                        <p class="product-description">Description: {{ product.description }}</p>
-                                        <p class="product-quantity">Quantity: {{ product.quantity }}</p>
-                                    </div>
+                {% for user_id, orders in grouped_orders.items() %}
+                    <div class="user-card">
+                        <h2 class="user-title">Orders for User #{{ user_id }}</h2>
+                        <ul class="user-orders-list">
+                            {% for order in orders %}
+                                <li class="order-card">
+                                    <h3 class="order-title">Order #{{ order.order_id }}</h3>
+                                    <h4 class="order-products-title">Products:</h4>
+                                    <ul class="order-products-list">
+                                        <li class="order-product-item">
+                                            <p class="product-name">Name: {{ order.product_name }}</p>
+                                            <p class="product-quantity">Quantity: {{ order.quantity }}</p>
+                                        </li>
+                                    </ul>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -57,6 +55,7 @@
             </div>
         {% endif %}
     {% endif %}
+
     <button id="top2" class="pulsante4" onclick="onTop()">⬆</button>
     <script>
         function onTop() {

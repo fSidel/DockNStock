@@ -238,6 +238,65 @@ def shopping_cart_update():
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Could not connect to db_api.", "details": str(e)}), 500
 
+import requests
+from flask import jsonify, redirect, url_for, flash
+
+@app.route('/place_orders', methods=["POST"])
+@login_required
+def place_orders():
+    """
+    Attempt to place orders for all products in the user's shopping cart.
+    Shows a flash message with products that were placed or cannot be satisfied.
+    """
+    print("Placing orders for user:", current_user.id)
+    
+    # Fetch wanted products
+    response = requests.get(f"http://db_api:5000/wants/{current_user.id}")
+    if not response.ok:
+        flash("Failed to fetch wanted products.", "error")
+        return redirect(url_for("shopping_cart"))
+
+    wanted_data = response.json()
+    satisfied_products = []
+    unsatisfied_products = []
+    print("Wanted data:", wanted_data)
+
+    # Attempt to place an order for each product
+    for item in wanted_data:
+        product_id = item["product_id"]
+        product_name = item["name"]
+        print(f"Trying to place order for product {product_name} (ID: {product_id})")
+
+        payload = {
+            "user_id": current_user.id,
+            "product_id": product_id
+        }
+
+        print("Order payload:", payload)
+
+        order_response = requests.post("http://db_api:5000/orders", json=payload)
+
+        if order_response.ok:
+            satisfied_products.append(product_name)
+        else:
+            try:
+                error_data = order_response.json()
+                error_message = error_data.get("error", "Unknown error")
+            except Exception:
+                error_message = order_response.text or "Unknown error"
+
+            print(f"Failed to place order for {product_name}: {error_message}")
+            unsatisfied_products.append(product_name)
+
+    # Flash messages
+    if satisfied_products:
+        flash(f"These products were successfully ordered: {', '.join(satisfied_products)}", "success")
+    if unsatisfied_products:
+        flash(f"These products cannot be satisfied due to stock limits: {', '.join(unsatisfied_products)}", "error")
+
+    return redirect(url_for("shopping_cart"))
+
+
 
 @app.route('/postcomments', methods = ["POST"])
 def post_comments():
@@ -436,51 +495,3 @@ def remove_from_wants():
     else:
         return jsonify({"error": "Failed to remove product from wants"}), response.status_code
 
-@app.route('/place_orders', methods=["POST"])
-@login_required
-def place_orders():
-    #TODO!
-
-    # """Send order data to order service and clear items from cart if successful."""
-    # data = request.json  # Get the JSON data from the request
-    # print("Received order data:", data)  # Debug log
-
-    # if not data or "cart_items" not in data:
-    #     return jsonify({"error": "Order data must include cart_items"}), 400
-
-    # try:
-    #     # Send order to external order service
-    #     response = requests.post(
-    #         "http://localhost:5001/receive_orders",
-    #         json={
-    #             "user_id": current_user.id,
-    #             "cart_items": data["cart_items"]
-    #         },
-    #         timeout=5
-    #     )
-    # except requests.RequestException as e:
-    #     print("Error contacting order service:", e)
-    #     return jsonify({"error": "Could not reach order service"}), 502
-
-    # if response.ok:
-    #     # Order accepted → remove items from cart
-    #     for item in data["cart_items"]:
-    #         product_id = item.get("product_id")
-    #         if not product_id:
-    #             continue
-
-    #         payload = {
-    #             "user_id": current_user.id,
-    #             "product_id": product_id
-    #         }
-    #         remove_response = requests.post(
-    #             "http://db_api:5000/cart/remove",
-    #             json=payload
-    #         )
-    #         if not remove_response.ok:
-    #             print(f"Failed to remove product {product_id} from cart")
-
-    #     return jsonify({"message": "Order placed and cart updated"}), 200
-    # else:
-    #     return jsonify({"error": "Order service rejected order"}), response.status_code
-    return jsonify({"status": "success", "message": "Order placed successfully"}),200

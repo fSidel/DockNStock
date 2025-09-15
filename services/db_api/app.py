@@ -9,6 +9,8 @@ from routes.comment import comment_bp
 from routes.supermarket import supermarket_bp
 from routes.owns import owns_bp
 from routes.wants import wants_bp
+from routes.orders import orders_bp
+
 
 import secrets
 
@@ -55,5 +57,7 @@ app.register_blueprint(comment_bp)
 app.register_blueprint(supermarket_bp)
 app.register_blueprint(owns_bp)
 app.register_blueprint(wants_bp)
+app.register_blueprint(orders_bp)
+
 
 

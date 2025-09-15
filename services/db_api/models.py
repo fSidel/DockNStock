@@ -146,5 +146,16 @@ class Comments(db.Model):
     users_comments = db.relationship("Users", backref=db.backref("users_comments", uselist=False))
     product_has_comments = db.relationship("Products", backref=db.backref("products_has_comment", uselist=False))
 
+class Orders(db.Model):
+    __tablename__ = 'orders'
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    supermarket_id = db.Column(db.Integer, db.ForeignKey('supermarkets.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    order_quantity = db.Column(db.Integer, nullable=False, default=1)
 
+    user = db.relationship("Users", backref="orders")
+    supermarket = db.relationship("Supermarkets", backref="orders")
+    product = db.relationship("Products", backref="orders")
