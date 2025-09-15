@@ -83,6 +83,7 @@
                 .then(response => {
                     if (response.ok) {
                         // Reload the page to update the cart
+                        location.reload();
                     } else {
                         // Handle errors
                         response.json().then(data => {
@@ -149,14 +150,11 @@
         if (response.ok) {
             alert(data.message || "Your order has been placed successfully!");
             window.location.href = "/shopping_cart"; // redirect back to cart
+            location.reload();
         } else {
             alert(data.error || "Failed to place your order.");
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while placing your order.');
-    });
 }
 
     </script>

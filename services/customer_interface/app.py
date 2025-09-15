@@ -238,19 +238,18 @@ def shopping_cart_update():
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Could not connect to db_api.", "details": str(e)}), 500
 
-import requests
-from flask import jsonify, redirect, url_for, flash
 
 @app.route('/place_orders', methods=["POST"])
 @login_required
 def place_orders():
     """
     Attempt to place orders for all products in the user's shopping cart.
-    Shows a flash message with products that were placed or cannot be satisfied.
+    Shows flash messages with products that were placed or cannot be satisfied.
+    Removes successfully ordered products from the wants table.
     """
     print("Placing orders for user:", current_user.id)
     
-    # Fetch wanted products
+    # Fetch wanted products from the API
     response = requests.get(f"http://db_api:5000/wants/{current_user.id}")
     if not response.ok:
         flash("Failed to fetch wanted products.", "error")
@@ -272,28 +271,31 @@ def place_orders():
             "product_id": product_id
         }
 
-        print("Order payload:", payload)
-
         order_response = requests.post("http://db_api:5000/orders", json=payload)
 
         if order_response.ok:
             satisfied_products.append(product_name)
+
+            # Remove the product from wants
+            remove_payload = {
+                "user_id": current_user.id,
+                "product_id": product_id
+            }
+            remove_response = requests.post("http://db_api:5000/wants/remove", json=remove_payload)
+            if not remove_response.ok:
+                print(f"Failed to remove {product_name} from wants: {remove_response.text}")
+
         else:
-            try:
-                error_data = order_response.json()
-                error_message = error_data.get("error", "Unknown error")
-            except Exception:
-                error_message = order_response.text or "Unknown error"
-
-            print(f"Failed to place order for {product_name}: {error_message}")
             unsatisfied_products.append(product_name)
+            print(f"Failed to place order for {product_name}: {order_response.text}")
 
-    # Flash messages
+    # Set flash messages for server-rendered page
     if satisfied_products:
         flash(f"These products were successfully ordered: {', '.join(satisfied_products)}", "success")
     if unsatisfied_products:
         flash(f"These products cannot be satisfied due to stock limits: {', '.join(unsatisfied_products)}", "error")
 
+    # Redirect to shopping cart page
     return redirect(url_for("shopping_cart"))
 
 
