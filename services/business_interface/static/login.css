@@ -43,7 +43,7 @@ a {
 }
 
 .failure{
-    background: #efff14;
+    background: #216952f1;
     border-radius: 30px;
     font-size: 17px;
     text-align: center;
@@ -143,7 +143,7 @@ a {
 .submit-btn{
     width: 100%;
     height: 250%;
-    background: #efff14;
+    background: #216952f1;
     border: none;
     border-radius: 30px;
     cursor: pointer;
@@ -170,7 +170,7 @@ a {
 }
 
 .submit-btn:hover{
-    background: #efff146f;
+    background: #175b46f1;
 }
 
 .input-field:hover{
@@ -197,7 +197,7 @@ a {
     .submit-btn{
         width: 100%;
         height: 60px;
-        background: #efff14;
+        background: #216952f1;
         border: none;
         border-radius: 30px;
         cursor: pointer;

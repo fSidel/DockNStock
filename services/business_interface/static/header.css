@@ -29,7 +29,7 @@ header {
 }
 
 .pulsante, .pulsante2, .pulsante3, .pulsante4, .pulsante5, .pulsanteClose{
-    background-color: #efff14f1;
+    background-color: #216952f1;
     border-radius: 20px;
     transition-duration: 0.4s;
     box-shadow: 0 8px 16px 0 #00000033, 0 6px 20px 0 #00000030;
@@ -71,7 +71,7 @@ header {
 
 
 .pulsante:hover, .pulsante2:hover, .pulsante3:hover, .pulsante4:hover, .pulsante5:hover{
-    background: #efff146f;
+    background: #1a5744f1;
     border-radius: 15px;
     text-decoration: none;
     color:#6b6b6b;
