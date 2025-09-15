@@ -31,7 +31,7 @@ A PostgreSQL database guarantees data persistence, while dedicated API services 
 21) As a Supermarket, I want to logout, so that I can end my session securely  
 22) As a Supermarket, I want to recover my password, so that I can regain access to my account  
 23) As a Supermarket, I want to add new products, so that I can expand my catalog  
-24) As a Supermarket, I want to view the list of all products offered across the platform, so that I can compare my catalog with competitors  
+24) As a Supermarket, I want to view the list of all my products, so that I can manage and monitor my catalog
 25) As a Supermarket, I want to view received orders, so that I can process them  
 26) As a Supermarket, I want to update the details of my products, so that the catalog is always accurate  
 27) As a Supermarket, I want to update only the quantity of a product, so that stock levels are kept accurate  
