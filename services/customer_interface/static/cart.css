@@ -180,3 +180,9 @@ body {
         margin-top: 10px;
     }
 }
+
+.place-order-form {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    margin-top: 20px;        /* space from cart items */
+}

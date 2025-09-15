@@ -47,7 +47,11 @@
         {% endif %}
     {% endif %}
     <button id="top2" class="pulsante4" onclick="onTop()">⬆</button>
-    <button id="place-order-button" style="margin-left: 44%;" class="pulsante4" onclick="placeOrder()">Place Order</button>
+    
+    <form action="{{ url_for('place_orders') }}" method="POST" class="place-order-form">
+        <button type="submit" class="pulsante4">Place Order</button>
+    </form>
+
 
 
     <br>
@@ -137,25 +141,6 @@
             }
         });
     });
-
-    function placeOrder() {
-    fetch('/place_orders', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (response.ok) {
-            alert(data.message || "Your order has been placed successfully!");
-            window.location.href = "/shopping_cart"; // redirect back to cart
-            location.reload();
-        } else {
-            alert(data.error || "Failed to place your order.");
-        }
-    })
-}
 
     </script>
 
