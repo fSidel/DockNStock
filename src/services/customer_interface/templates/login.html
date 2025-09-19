@@ -1,0 +1,71 @@
+{% extends 'header.html' %}
+{% block contenttop %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='login.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='header.css')}}">
+    <title>StockNDock - Sign in</title>
+</head>
+<body class="intero">
+
+    {% endblock %}
+    {% block contentdown %}
+    <div class="background"></div>
+    <div id="plane"></div>
+    <form method="post">
+    <div class="login-box">
+        
+        <div class="login-header">
+            <header>Sign in</header>
+        </div>
+        
+        <div class="input-box">
+            <input type="email" name = "username_input" class="input-field" placeholder="Email" autocomplete="email" onclick="myFunction()" title="Enter your email." required>
+        </div>
+
+        <div class="input-box">
+            <input type="password" name = "password_input" class="input-field" placeholder="Password" autocomplete="new-password" title="Enter your password." required>
+        </div>
+
+        <div class="small">
+            <a href="/forget" class="forget">Forgot yout password?</a>
+        </div>
+        
+        <div class="input-submit">
+            <button class="submit-btn" id="submit" type = "submit">Sign in</button>
+        </div>
+        <br>
+
+        {% if something_failed %}
+        <br>
+        <div class = "failure">
+            {% if user_not_found %}
+                <p>User not found, you have to <a href="/register">Sign up</a></p>
+            {% else %}
+                <p>You entered either a wrong username or a wrong password. Try again!</p>
+            {% endif %}
+
+        {% if show_data %}
+            <p>something_failed</p>
+        {% endif %}
+        </div>
+        <br>
+        {% else %}
+        <div class="sign-up-link">
+            <p>Don't have account? <a href="/register">Sign up</a></p>
+            <br>
+        </div>
+        {% endif %}
+    
+    </div>
+    </form>
+<script type = "text/javascript" src = "{{url_for('static', filename='plane.js')}}"></script>
+
+</body>
+</html>
+{% endblock %}
