@@ -11,7 +11,7 @@
    
 
 3. Compose with Docker
-    ```docker-compose up
+    ```docker-compose up```
 
 4. The services will be available at the following ports:
     - service_interface: http://localhost:5001
