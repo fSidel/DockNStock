@@ -11,9 +11,10 @@
    
 
 3. Compose with Docker
-    ```docker-compose up```
+    ```bash
+   docker-compose up
 
-4. The services will be available at the following ports:
+5. The services will be available at the following ports:
     - service_interface: http://localhost:5001
     - service_flask: http://localhost:5002
     - PostgreSQL Database: Port 5432
